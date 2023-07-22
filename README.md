@@ -23,6 +23,7 @@ A script to fetch data from Fitbit servers using their API and store the data in
 -  client_id = "your_application_client_ID"
 -  client_secret = "your_application_client_secret"
 -  DEVICENAME = "Your_Device_Name" # example - "Charge5"
+-  AUTO_DATE_RANGE selects current date by default, if you want to load past data into the database, simply make it to False and the script will ask for start and end dates ( in YYYY-MM_DD format ) at runtime. 
 
 #### Run the script; it will request a refresh token as input for the first run to set up the token file. You can check the logs to see the work in progress. The script, by default, keeps running forever, calling different functions at scheduled intervals. 
 
