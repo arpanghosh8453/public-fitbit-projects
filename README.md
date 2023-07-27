@@ -12,7 +12,7 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 #### Use the requirements.txt file to install the required packages. 
 
-#### Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step )
+#### Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step after following OAuth setup )
 
 #### Update the following variables in the script
 -  FITBIT_LOG_FILE_PATH = "your/expected/log/file/location/path"
