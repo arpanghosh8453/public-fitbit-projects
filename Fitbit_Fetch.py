@@ -1,5 +1,5 @@
 # %%
-import base64, requests, schedule, time, json, pytz, logging
+import base64, requests, schedule, time, json, pytz, logging, os
 from requests.exceptions import ConnectionError
 from datetime import datetime, timedelta
 from influxdb import InfluxDBClient
@@ -9,23 +9,23 @@ from influxdb.exceptions import InfluxDBClientError
 # ## Variables
 
 # %%
-FITBIT_LOG_FILE_PATH = "your/expected/log/file/location/path"
-TOKEN_FILE_PATH = "your/expected/token/file/location/path"
+FITBIT_LOG_FILE_PATH = os.environ.get("FITBIT_LOG_FILE_PATH") or "your/expected/log/file/location/path"
+TOKEN_FILE_PATH = os.environ.get("TOKEN_FILE_PATH") or "your/expected/token/file/location/path"
 OVERWRITE_LOG_FILE = True
 FITBIT_LANGUAGE = 'en_US'
-INFLUXDB_HOST = 'localhost'
-INFLUXDB_PORT = 8086
-INFLUXDB_USERNAME = 'your_influxdb_username'
-INFLUXDB_PASSWORD = 'your_influxdb_password'
-INFLUXDB_DATABASE = 'your_influxdb_database_name'
+INFLUXDB_HOST = os.environ.get("INFLUXDB_HOST") or 'localhost'
+INFLUXDB_PORT = os.environ.get("INFLUXDB_PORT") or 8086
+INFLUXDB_USERNAME = os.environ.get("INFLUXDB_USERNAME") or 'your_influxdb_username'
+INFLUXDB_PASSWORD = os.environ.get("INFLUXDB_PASSWORD") or 'your_influxdb_password'
+INFLUXDB_DATABASE = os.environ.get("INFLUXDB_DATABASE") or 'your_influxdb_database_name'
 # MAKE SURE you set the application type to PERSONAL. Otherwise, you won't have access to intraday data series, resulting in 40X errors.
-client_id = "your_application_client_ID" # Change this to your client ID
-client_secret = "your_application_client_secret" # Change this to your client Secret
-DEVICENAME = "Your_Device_Name" # e.g. "Charge5"
+client_id = os.environ.get("CLIENT_ID") or "your_application_client_ID" # Change this to your client ID
+client_secret = os.environ.get("CLIENT_SECRET") or "your_application_client_secret" # Change this to your client Secret
+DEVICENAME = os.environ.get("DEVICENAME") or "Your_Device_Name" # e.g. "Charge5"
 ACCESS_TOKEN = "" # Empty Global variable initialization, will be replaced with a functional access code later using the refresh code
 AUTO_DATE_RANGE = True # Automatically selects date range from todays date and update_date_range variable
 auto_update_date_range = 1 # Days to go back from today for AUTO_DATE_RANGE *** DO NOT go above 2 - otherwise may break rate limit ***
-LOCAL_TIMEZONE = "Automatic" # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically). 
+LOCAL_TIMEZONE = "Automatic" # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically).
 SCHEDULE_AUTO_UPDATE = True if AUTO_DATE_RANGE else False # Scheduling updates of data when script runs
 SERVER_ERROR_MAX_RETRY = 3
 EXPIRED_TOKEN_MAX_RETRY = 5
