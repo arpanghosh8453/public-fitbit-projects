@@ -1,5 +1,5 @@
 # %%
-import base64, requests, schedule, time, json, pytz, logging, os
+import base64, requests, schedule, time, json, pytz, logging, os, sys
 from requests.exceptions import ConnectionError
 from datetime import datetime, timedelta
 from influxdb import InfluxDBClient
@@ -41,8 +41,10 @@ if OVERWRITE_LOG_FILE:
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    filename=FITBIT_LOG_FILE_PATH,
-    filemode="a"
+    handlers=[
+        logging.FileHandler(FITBIT_LOG_FILE_PATH, mode='a'),
+        logging.StreamHandler(sys.stdout)
+    ]
 )
 
 # %% [markdown]
