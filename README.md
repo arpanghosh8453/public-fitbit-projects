@@ -31,3 +31,68 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 #### You can use the Fitbit_Fetch_Autostart.service template to set up an auto-starting ( and auto-restarting in case of temporary failure ) service in Linux based system ( or WSL )
 
+## Full Stack install with Docker 
+
+#### Initial setup : Create a folder named fitbit-fetch-data, cd into the folder, create a docker-compose.yml file with the below compose example ( Change the enviornment variables accordingly )
+#### Initial set up of Access and Refresh tokens with the command : docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data
+#### Enter the refresh token you obtained from your fitbit account and hit enter. 
+#### Then exit out with ctrl + c ( after you see the successful api requests in the stdout log )
+#### Finally run : docker compose up -d' ( to launch the full stack )
+
+docker
+```
+version: '3.4'
+services:
+  fitbit-fetch-data:
+    restart: unless-stopped
+    image: thisisarpanghosh/fitbit-fetch-data:latest
+    container_name: fitbit-fetch-data
+    volumes:
+      - ./logs:/app/logs
+      - ./tokens:/app/tokens
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
+      - TOKEN_FILE_PATH=/app/tokens/fitbit.token
+      - OVERWRITE_LOG_FILE=True
+      - FITBIT_LANGUAGE='en_US'
+      - INFLUXDB_HOST=influxdb # Should match influxdb container_name
+      - INFLUXDB_PORT=8086 # Should match influxdb port
+      - INFLUXDB_USERNAME=fitbit_user # Should match influxdb username
+      - INFLUXDB_PASSWORD=fitbit_password # Should match influxdb password
+      - INFLUXDB_DATABASE=fitbit_database # Should match influxdb database name ( where user has access )
+      - CLIENT_ID=your_application_client_ID # Change this to your client ID
+      - CLIENT_SECRET=your_application_client_secret # Change this to your client Secret
+      - DEVICENAME='Your_Device_Name' # Change this to your device name - e.g. "Charge5"
+      # Dont change the following if you are not sure about the variable. 
+      - AUTO_DATE_RANGE=True # Automatically selects date range from todays date and update_date_range variable
+      - auto_update_date_range=1 # Days to go back from today for AUTO_DATE_RANGE *** DO NOT go above 2 - otherwise may break rate limit ***
+      - LOCAL_TIMEZONE="Automatic" # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically). 
+      - SCHEDULE_AUTO_UPDATE=True # if AUTO_DATE_RANGE else False # Scheduling updates of data when script runs
+      - SERVER_ERROR_MAX_RETRY=3
+      - EXPIRED_TOKEN_MAX_RETRY=5
+      - SKIP_REQUEST_ON_SERVER_ERROR=True
+
+  influxdb:
+    restart: unless-stopped
+    container_name: influxdb
+    environment:
+      - INFLUXDB_DB=fitbit_database
+      - INFLUXDB_USER=fitbit_user
+      - INFLUXDB_USER_PASSWORD=fitbit_password
+    ports:
+        - '8086:8086'
+    volumes:
+        - './influxdb:/var/lib/influxdb'
+    image: 'influxdb:1.8'
+
+  grafana:
+    restart: unless-stopped
+    volumes:
+        - './grafana:/var/lib/grafana'
+    ports:
+        - '3000:3000'
+    container_name: grafana
+    image: 'grafana/grafana:latest'
+```
