@@ -2,8 +2,13 @@
 import base64, requests, schedule, time, json, pytz, logging, os, sys
 from requests.exceptions import ConnectionError
 from datetime import datetime, timedelta
+# for influxdb 1.x
 from influxdb import InfluxDBClient
 from influxdb.exceptions import InfluxDBClientError
+# for influxdb 2.x
+from influxdb_client import InfluxDBClient as InfluxDBClient2
+from influxdb_client.client.exceptions import InfluxDBError
+from influxdb_client.client.write_api import SYNCHRONOUS
 
 # %% [markdown]
 # ## Variables
@@ -13,11 +18,18 @@ FITBIT_LOG_FILE_PATH = os.environ.get("FITBIT_LOG_FILE_PATH") or "your/expected/
 TOKEN_FILE_PATH = os.environ.get("TOKEN_FILE_PATH") or "your/expected/token/file/location/path"
 OVERWRITE_LOG_FILE = True
 FITBIT_LANGUAGE = 'en_US'
-INFLUXDB_HOST = os.environ.get("INFLUXDB_HOST") or 'localhost'
-INFLUXDB_PORT = os.environ.get("INFLUXDB_PORT") or 8086
-INFLUXDB_USERNAME = os.environ.get("INFLUXDB_USERNAME") or 'your_influxdb_username'
-INFLUXDB_PASSWORD = os.environ.get("INFLUXDB_PASSWORD") or 'your_influxdb_password'
-INFLUXDB_DATABASE = os.environ.get("INFLUXDB_DATABASE") or 'your_influxdb_database_name'
+INFLUXDB_VERSION = os.environ.get("INFLUXDB_VERSION") or 1 # Version of influxdb in use, supported values are 1 or 2
+# Update these variables for influxdb 1.x versions
+INFLUXDB_HOST = os.environ.get("INFLUXDB_HOST") or 'localhost' # for influxdb 1.x
+INFLUXDB_PORT = os.environ.get("INFLUXDB_PORT") or 8086 # for influxdb 1.x 
+INFLUXDB_USERNAME = os.environ.get("INFLUXDB_USERNAME") or 'your_influxdb_username' # for influxdb 1.x
+INFLUXDB_PASSWORD = os.environ.get("INFLUXDB_PASSWORD") or 'your_influxdb_password' # for influxdb 1.x
+INFLUXDB_DATABASE = os.environ.get("INFLUXDB_DATABASE") or 'your_influxdb_database_name' # for influxdb 1.x
+# Update these variables for influxdb 2.x versions
+INFLUXDB_BUCKET = os.environ.get("INFLUXDB_BUCKET") or "your_bucket_name_here" # for influxdb 2.x
+INFLUXDB_ORG = os.environ.get("INFLUXDB_ORG") or "your_org_here" # for influxdb 2.x
+INFLUXDB_TOKEN = os.environ.get("INFLUXDB_TOKEN") or "your_token_here" # for influxdb 2.x
+INFLUXDB_URL = os.environ.get("INFLUXDB_URL") or "http://your_url_here:8086" # for influxdb 2.x
 # MAKE SURE you set the application type to PERSONAL. Otherwise, you won't have access to intraday data series, resulting in 40X errors.
 client_id = os.environ.get("CLIENT_ID") or "your_application_client_ID" # Change this to your client ID
 client_secret = os.environ.get("CLIENT_SECRET") or "your_application_client_secret" # Change this to your client Secret
@@ -154,20 +166,43 @@ ACCESS_TOKEN = Get_New_Access_Token(client_id, client_secret)
 # ## Influxdb Database Initialization
 
 # %%
-try:
-    influxdbclient = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT, username=INFLUXDB_USERNAME, password=INFLUXDB_PASSWORD)
-    influxdbclient.switch_database(INFLUXDB_DATABASE)
-except InfluxDBClientError as err:
-    logging.error("Unable to connect with influxdb database! Aborted")
-    raise InfluxDBClientError("InfluxDB connection failed:" + str(err))
+if INFLUXDB_VERSION == 2:
+    try:
+        influxdbclient = InfluxDBClient2(url=INFLUXDB_URL, token=INFLUXDB_TOKEN, org=INFLUXDB_ORG)
+        influxdb_write_api = influxdbclient.write_api(write_options=SYNCHRONOUS)
+    except InfluxDBError as err:
+        logging.error("Unable to connect with influxdb 2.x database! Aborted")
+        raise InfluxDBError("InfluxDB connection failed:" + str(err))
+elif INFLUXDB_VERSION == 1:
+    try:
+        influxdbclient = InfluxDBClient(host=INFLUXDB_HOST, port=INFLUXDB_PORT, username=INFLUXDB_USERNAME, password=INFLUXDB_PASSWORD)
+        influxdbclient.switch_database(INFLUXDB_DATABASE)
+    except InfluxDBClientError as err:
+        logging.error("Unable to connect with influxdb 1.x database! Aborted")
+        raise InfluxDBClientError("InfluxDB connection failed:" + str(err))
+else:
+    logging.error("No matching version found. Supported values are 1 and 2")
+    raise InfluxDBClientError("No matching version found. Supported values are 1 and 2:" + str(err))
 
 def write_points_to_influxdb(points):
-    try:
-        influxdbclient.write_points(points)
-        logging.info("Successfully updated influxdb database with new points")
-    except InfluxDBClientError as err:
-        logging.error("Unable to connect with influxdb database! " + str(err))
-        print("Influxdb connection failed! ", str(err))
+    if INFLUXDB_VERSION == 2:
+        try:
+            influxdb_write_api.write(bucket=INFLUXDB_BUCKET, org=INFLUXDB_ORG, record=points)
+            logging.info("Successfully updated influxdb database with new points")
+        except InfluxDBError as err:
+            logging.error("Unable to connect with influxdb 2.x database! " + str(err))
+            print("Influxdb connection failed! ", str(err))
+    elif INFLUXDB_VERSION == 1:
+        try:
+            influxdbclient.write_points(points)
+            logging.info("Successfully updated influxdb database with new points")
+        except InfluxDBClientError as err:
+            logging.error("Unable to connect with influxdb 1.x database! " + str(err))
+            print("Influxdb connection failed! ", str(err))
+    else:
+        logging.error("No matching version found. Supported values are 1 and 2")
+        raise InfluxDBClientError("No matching version found. Supported values are 1 and 2:" + str(err))
+    
 
 # %% [markdown]
 # ## Selecting Dates for update
