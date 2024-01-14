@@ -56,11 +56,18 @@ services:
       - TOKEN_FILE_PATH=/app/tokens/fitbit.token
       - OVERWRITE_LOG_FILE=True
       - FITBIT_LANGUAGE='en_US'
-      - INFLUXDB_HOST=influxdb # Should match influxdb container_name
-      - INFLUXDB_PORT=8086 # Should match influxdb port
-      - INFLUXDB_USERNAME=fitbit_user # Should match influxdb username
-      - INFLUXDB_PASSWORD=fitbit_password # Should match influxdb password
-      - INFLUXDB_DATABASE=fitbit_database # Should match influxdb database name ( where user has access )
+      - INFLUXDB_VERSION = 1 # supported values are 1 and 2 
+      # Variables for influxdb 2.x ( you need to change the influxdb container config below accordingly )
+      - INFLUXDB_BUCKET = your_bucket_name_here # for influxdb 2.x
+      - INFLUXDB_ORG = your_org_here # for influxdb 2.x
+      - INFLUXDB_TOKEN = your_token_here # for influxdb 2.x
+      - INFLUXDB_URL = your_influxdb_server_location_with_port_here # for influxdb 2.x
+      # Variables for influxdb 1.x
+      - INFLUXDB_HOST=influxdb # for influxdb 1.x
+      - INFLUXDB_PORT=8086 # for influxdb 1.x
+      - INFLUXDB_USERNAME=fitbit_user # for influxdb 1.x
+      - INFLUXDB_PASSWORD=fitbit_password # for influxdb 1.x
+      - INFLUXDB_DATABASE=fitbit_database # for influxdb 1.x
       - CLIENT_ID=your_application_client_ID # Change this to your client ID
       - CLIENT_SECRET=your_application_client_secret # Change this to your client Secret
       - DEVICENAME='Your_Device_Name' # Change this to your device name - e.g. "Charge5"
