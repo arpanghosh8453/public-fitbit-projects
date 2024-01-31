@@ -37,7 +37,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -130,7 +131,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -212,7 +214,7 @@
             "type": "influxdb",
             "uid": "f5282ce6-019c-47a3-94d7-009bc93fdf14"
           },
-          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"Device\"] == \"'Sense2'\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> movingAverage(n: 6)\r\n  |> yield(name: \"value\")\r\n",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"Device\"] == \"'Sense2'\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)\r\n  |> movingAverage(n: 6)\r\n  |> yield(name: \"value\")\r\n",
           "refId": "all"
         },
         {
@@ -221,7 +223,7 @@
             "uid": "f5282ce6-019c-47a3-94d7-009bc93fdf14"
           },
           "hide": false,
-          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"Device\"] == \"'Sense2'\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r._value > 120)\r\n  |> movingAverage(n: 6)\r\n  |> yield(name: \"high\")",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"Device\"] == \"'Sense2'\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r._value > 120)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)\r\n  |> movingAverage(n: 6)\r\n  |> yield(name: \"high\")",
           "refId": "high"
         },
         {
@@ -230,7 +232,7 @@
             "uid": "f5282ce6-019c-47a3-94d7-009bc93fdf14"
           },
           "hide": false,
-          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"Device\"] == \"'Sense2'\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r._value <= 60)\r\n  |> movingAverage(n: 6)\r\n  |> yield(name: \"low\")",
+          "query": "from(bucket: \"${bucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HeartRate_Intraday\")\r\n  |> filter(fn: (r) => r[\"Device\"] == \"'Sense2'\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\r\n  |> filter(fn: (r) => r._value <= 60)\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: true)\r\n  |> movingAverage(n: 6)\r\n  |> yield(name: \"low\")",
           "refId": "low"
         }
       ],
@@ -255,7 +257,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue"
+                "color": "blue",
+                "value": null
               },
               {
                 "color": "green",
@@ -355,7 +358,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -416,7 +420,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-red"
+                "color": "dark-red",
+                "value": null
               },
               {
                 "color": "orange",
@@ -516,7 +521,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -607,7 +613,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -661,7 +668,7 @@
       "type": "barchart"
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -697,6 +704,6 @@
   "timezone": "",
   "title": "fitbit",
   "uid": "c4ecefa1-6ad4-4ce1-92fc-037e65d2fac4",
-  "version": 4,
+  "version": 5,
   "weekStart": ""
 }
