@@ -37,10 +37,10 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 #### Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step after following OAuth setup )
 #### Initial setup : Create a folder named fitbit-fetch-data, cd into the folder, create a docker-compose.yml file with the below compose example ( Change the enviornment variables accordingly )
-#### Initial set up of Access and Refresh tokens with the command : docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data
+#### Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data`
 #### Enter the refresh token you obtained from your fitbit account and hit enter. ❗❗ The Fitbit application type must be personal for intraday data access ❗❗
 #### Then exit out with ctrl + c ( after you see the successful api requests in the stdout log )
-#### Finally run : docker compose up -d ( to launch the full stack )
+#### Finally run : `docker compose up -d` ( to launch the full stack )
 
 ```
 version: '3.4'
