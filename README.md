@@ -53,7 +53,6 @@ services:
       - ./logs:/app/logs
       - ./tokens:/app/tokens
       - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
     environment:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
       - TOKEN_FILE_PATH=/app/tokens/fitbit.token
@@ -73,15 +72,9 @@ services:
       - INFLUXDB_DATABASE=fitbit_database # for influxdb 1.x
       - CLIENT_ID=your_application_client_ID # Change this to your client ID
       - CLIENT_SECRET=your_application_client_secret # Change this to your client Secret
-      - DEVICENAME='Your_Device_Name' # Change this to your device name - e.g. "Charge5"
-      # Dont change the following if you are not sure about the variable. 
-      - AUTO_DATE_RANGE=True # Automatically selects date range from todays date and update_date_range variable
-      - auto_update_date_range=1 # Days to go back from today for AUTO_DATE_RANGE *** DO NOT go above 2 - otherwise may break rate limit ***
-      - LOCAL_TIMEZONE="Automatic" # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically). 
-      - SCHEDULE_AUTO_UPDATE=True # if AUTO_DATE_RANGE else False # Scheduling updates of data when script runs
-      - SERVER_ERROR_MAX_RETRY=3
-      - EXPIRED_TOKEN_MAX_RETRY=5
-      - SKIP_REQUEST_ON_SERVER_ERROR=True
+      - DEVICENAME=Your_Device_Name # Change this to your device name - e.g. "Charge5"
+      - LOCAL_TIMEZONE=Automatic # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically). 
+
 
   influxdb:
     restart: unless-stopped

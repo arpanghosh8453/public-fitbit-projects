@@ -37,7 +37,7 @@ DEVICENAME = os.environ.get("DEVICENAME") or "Your_Device_Name" # e.g. "Charge5"
 ACCESS_TOKEN = "" # Empty Global variable initialization, will be replaced with a functional access code later using the refresh code
 AUTO_DATE_RANGE = True # Automatically selects date range from todays date and update_date_range variable
 auto_update_date_range = 1 # Days to go back from today for AUTO_DATE_RANGE *** DO NOT go above 2 - otherwise may break rate limit ***
-LOCAL_TIMEZONE = "Automatic" # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically).
+LOCAL_TIMEZONE = os.environ.get("LOCAL_TIMEZONE") or "Automatic" # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically).
 SCHEDULE_AUTO_UPDATE = True if AUTO_DATE_RANGE else False # Scheduling updates of data when script runs
 SERVER_ERROR_MAX_RETRY = 3
 EXPIRED_TOKEN_MAX_RETRY = 5
@@ -202,14 +202,22 @@ def write_points_to_influxdb(points):
     else:
         logging.error("No matching version found. Supported values are 1 and 2")
         raise InfluxDBClientError("No matching version found. Supported values are 1 and 2:" + str(err))
-    
+
+# %% [markdown]
+# ## Set Timezone from profile data
+
+# %%
+if LOCAL_TIMEZONE == "Automatic":
+    LOCAL_TIMEZONE = pytz.timezone(request_data_from_fitbit("https://api.fitbit.com/1/user/-/profile.json")["user"]["timezone"])
+else:
+    LOCAL_TIMEZONE = pytz.timezone(LOCAL_TIMEZONE)
 
 # %% [markdown]
 # ## Selecting Dates for update
 
 # %%
 if AUTO_DATE_RANGE:
-    end_date = datetime.now()
+    end_date = datetime.now(LOCAL_TIMEZONE)
     start_date = end_date - timedelta(days=auto_update_date_range)
     end_date_str = end_date.strftime("%Y-%m-%d")
     start_date_str = start_date.strftime("%Y-%m-%d")
@@ -227,7 +235,7 @@ collected_records = []
 
 def update_working_dates():
     global end_date, start_date, end_date_str, start_date_str
-    end_date = datetime.now()
+    end_date = datetime.now(LOCAL_TIMEZONE)
     start_date = end_date - timedelta(days=auto_update_date_range)
     end_date_str = end_date.strftime("%Y-%m-%d")
     start_date_str = start_date.strftime("%Y-%m-%d")
@@ -557,15 +565,6 @@ def fetch_latest_activities(end_date_str):
     else:
         logging.error("Fetching 50 recent activities failed : before date " + end_date_str)
 
-
-# %% [markdown]
-# ## Set Timezone from profile data
-
-# %%
-if LOCAL_TIMEZONE == "Automatic":
-    LOCAL_TIMEZONE = pytz.timezone(request_data_from_fitbit("https://api.fitbit.com/1/user/-/profile.json")["user"]["timezone"])
-else:
-    LOCAL_TIMEZONE = pytz.timezone(LOCAL_TIMEZONE)
 
 # %% [markdown]
 # ## Call the functions one time as a startup update OR do switch to bulk update mode
