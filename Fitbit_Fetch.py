@@ -182,7 +182,7 @@ elif INFLUXDB_VERSION == 1:
         raise InfluxDBClientError("InfluxDB connection failed:" + str(err))
 else:
     logging.error("No matching version found. Supported values are 1 and 2")
-    raise InfluxDBClientError("No matching version found. Supported values are 1 and 2:" + str(err))
+    raise InfluxDBClientError("No matching version found. Supported values are 1 and 2:")
 
 def write_points_to_influxdb(points):
     if INFLUXDB_VERSION == 2:

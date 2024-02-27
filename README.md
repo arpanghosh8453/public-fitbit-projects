@@ -57,7 +57,6 @@ services:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
       - TOKEN_FILE_PATH=/app/tokens/fitbit.token
       - OVERWRITE_LOG_FILE=True
-      - FITBIT_LANGUAGE='en_US'
       - INFLUXDB_VERSION = 1 # supported values are 1 and 2 
       # Variables for influxdb 2.x ( you need to change the influxdb container config below accordingly )
       - INFLUXDB_BUCKET = your_bucket_name_here # for influxdb 2.x
