@@ -16,7 +16,7 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 ❗❗ The Fitbit application must be personal type for the access of intraday data series ❗❗
 
-#### Update the following variables in the script
+#### Update the following variables in the script ( use the influxdb-v2 specific variables for influxdb-v2 instance )
 -  FITBIT_LOG_FILE_PATH = "your/expected/log/file/location/path"
 -  TOKEN_FILE_PATH = "your/expected/token/file/location/path"
 -  INFLUXDB_USERNAME = 'your_influxdb_username'
@@ -25,7 +25,7 @@ A script to fetch data from Fitbit servers using their API and store the data in
 -  client_id = "your_application_client_ID"
 -  client_secret = "your_application_client_secret"
 -  DEVICENAME = "Your_Device_Name" # example - "Charge5"
--  AUTO_DATE_RANGE selects current date by default, if you want to load past data into the database, simply make it to False and the script will ask for start and end dates ( in YYYY-MM_DD format ) at runtime. 
+-  LOCAL_TIMEZONE=Automatic # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically). 
 
 #### Run the script; it will request a refresh token as input for the first run to set up the token file. You can check the logs to see the work in progress. The script, by default, keeps running forever, calling different functions at scheduled intervals. 
 
