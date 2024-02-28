@@ -57,12 +57,12 @@ services:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
       - TOKEN_FILE_PATH=/app/tokens/fitbit.token
       - OVERWRITE_LOG_FILE=True
-      - INFLUXDB_VERSION = 1 # supported values are 1 and 2 
+      - INFLUXDB_VERSION=1 # supported values are 1 and 2 
       # Variables for influxdb 2.x ( you need to change the influxdb container config below accordingly )
-      - INFLUXDB_BUCKET = your_bucket_name_here # for influxdb 2.x
-      - INFLUXDB_ORG = your_org_here # for influxdb 2.x
-      - INFLUXDB_TOKEN = your_token_here # for influxdb 2.x
-      - INFLUXDB_URL = your_influxdb_server_location_with_port_here # for influxdb 2.x
+      - INFLUXDB_BUCKET=your_bucket_name_here # for influxdb 2.x
+      - INFLUXDB_ORG=your_org_here # for influxdb 2.x
+      - INFLUXDB_TOKEN=your_token_here # for influxdb 2.x
+      - INFLUXDB_URL=your_influxdb_server_location_with_port_here # for influxdb 2.x
       # Variables for influxdb 1.x
       - INFLUXDB_HOST=influxdb # for influxdb 1.x
       - INFLUXDB_PORT=8086 # for influxdb 1.x
