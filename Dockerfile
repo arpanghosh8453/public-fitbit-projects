@@ -15,7 +15,7 @@ WORKDIR /app
 COPY ./Fitbit_Fetch.py /app
 COPY ./requirements.txt /app
 
-RUN groupadd --gid 1000 appuser && useradd --uid 1000 --gid appuser --shell /bin/bash --create-home appuser
+RUN groupadd --gid 1000 appuser && useradd --uid 1000 --gid appuser --shell /bin/bash --create-home appuser && chown -R appuser:appuser /app
 USER appuser
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
