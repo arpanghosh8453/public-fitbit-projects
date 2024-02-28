@@ -1,6 +1,7 @@
 version: '3.4'
 services:
 # Initial setup. Run the following command first and enter a valie fitbit refresh token
+# make sure the mapped logs and tokens folders exists and owned by 1000 uid, otherwise you may get permission denied error. 
 # docker compose run --rm fitbit-fetch-data
 # Then exit out with ctrl + c
 # Then run docker compose up -d to launch the full stack
@@ -9,8 +10,8 @@ services:
     image: thisisarpanghosh/fitbit-fetch-data:latest
     container_name: fitbit-fetch-data
     volumes:
-      - ./logs:/app/logs
-      - ./tokens:/app/tokens
+      - ./logs:/app/logs # logs folder should exist and owned by user id 1000
+      - ./tokens:/app/tokens # tokens folder should esist and owned by user id 1000
       - /etc/timezone:/etc/timezone:ro
     environment:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
