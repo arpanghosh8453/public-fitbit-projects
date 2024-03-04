@@ -633,6 +633,7 @@ if SCHEDULE_AUTO_UPDATE:
     
     schedule.every(1).hours.do(lambda : Get_New_Access_Token(client_id,client_secret)) # Auto-refresh tokens every 1 hour
     schedule.every(3).minutes.do( lambda : get_intraday_data_limit_1d(end_date_str, [('heart','HeartRate_Intraday','1sec'),('steps','Steps_Intraday','1min')] )) # Auto-refresh detailed HR and steps
+    schedule.every(1).hours.do( lambda : get_intraday_data_limit_1d((datetime.strptime(end_date_str, "%Y-%m-%d") - timedelta(days=1)).strftime("%Y-%m-%d"), [('heart','HeartRate_Intraday','1sec'),('steps','Steps_Intraday','1min')] )) # Refilling any missing data on previous day end of night due to fitbit sync delay ( see issue #10 )
     schedule.every(20).minutes.do(get_battery_level) # Auto-refresh battery level
     schedule.every(3).hours.do(lambda : get_daily_data_limit_30d(start_date_str, end_date_str))
     schedule.every(4).hours.do(lambda : get_daily_data_limit_100d(start_date_str, end_date_str))
