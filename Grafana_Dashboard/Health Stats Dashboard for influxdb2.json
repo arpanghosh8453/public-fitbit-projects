@@ -3742,6 +3742,141 @@
         "type": "influxdb",
         "uid": "${DS_INFLUXDB}"
       },
+      "description": "Represent the level of activity in the day",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "m"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Sedentary"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Fairly"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-orange",
+                  "mode": "shades"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Very"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "shades"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 0,
+        "y": 91
+      },
+      "id": 65,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "normal",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "_time",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "10.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"date\"\nfrom(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"Activity Minutes\")\n  |> filter(fn: (r) => r._field == \"minutesFairlyActive\" or r._field == \"minutesLightlyActive\" or r._field == \"minutesSedentary\" or r._field == \"minutesVeryActive\")\n  |> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({\n      _time: r._time,\n      Sedentary: r.minutesSedentary,\n      Light: r.minutesLightlyActive,\n      Fairly: r.minutesFairlyActive,\n      Very: r.minutesVeryActive\n  }))\n  |> yield(name: \"orderedMedian\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Activities Minutes",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3789,7 +3924,7 @@
       "gridPos": {
         "h": 8,
         "w": 7,
-        "x": 0,
+        "x": 10,
         "y": 91
       },
       "id": 23,
@@ -3932,7 +4067,7 @@
       "gridPos": {
         "h": 8,
         "w": 7,
-        "x": 7,
+        "x": 17,
         "y": 91
       },
       "id": 21,
@@ -4609,6 +4744,6 @@
   "timezone": "browser",
   "title": "Health Stats",
   "uid": "_cl7FMC4z",
-  "version": 14,
+  "version": 15,
   "weekStart": ""
 }
