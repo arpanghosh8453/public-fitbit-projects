@@ -396,7 +396,7 @@ def get_daily_data_limit_100d(start_date_str, end_date_str):
                     }
                 })
             
-            sleep_level_mapping = {'wake': 3, 'rem': 2, 'light': 1, 'deep': 0, 'asleep': 1, 'restless': 2, 'awake': 3}
+            sleep_level_mapping = {'wake': 3, 'rem': 2, 'light': 1, 'deep': 0, 'asleep': 1, 'restless': 2, 'awake': 3, 'unknown': 4}
             for sleep_stage in record['levels']['data']:
                 log_time = datetime.fromisoformat(sleep_stage["dateTime"])
                 utc_time = LOCAL_TIMEZONE.localize(log_time).astimezone(pytz.utc).isoformat()
