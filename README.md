@@ -1,3 +1,7 @@
+<p align="center">
+<img src="./extra/Fitbit_dashboard.png" width="500" height="160" align="center">
+</p>
+
 # Fitbit Fetch script and Influxdb Grafana integration
 A script to fetch data from Fitbit servers using their API and store the data in a local influxdb database. 
 
