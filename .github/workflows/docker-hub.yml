@@ -3,48 +3,56 @@ name: Build and Push Docker Image to Docker Hub
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
 
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: lemaba/fitbit-fetch-data
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Build the Docker image
       run: docker-compose build --no-cache --force-rm 
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Test the Docker image
         run: docker-compose up -d 
+  
   push_to_registry:
     name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      packages: write
+      
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: actions/checkout@v4
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v3.1.0
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v5.3.0
         with:
-          context: "{{defaultContext}}"
+          context: .
           push: true
-          tags: matzekenigneering/fitbit-fetch-data:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
