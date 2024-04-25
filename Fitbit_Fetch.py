@@ -31,6 +31,7 @@ INFLUXDB_ORG = os.environ.get("INFLUXDB_ORG") or "your_org_here" # for influxdb 
 INFLUXDB_TOKEN = os.environ.get("INFLUXDB_TOKEN") or "your_token_here" # for influxdb 2.x
 INFLUXDB_URL = os.environ.get("INFLUXDB_URL") or "http://your_url_here:8086" # for influxdb 2.x
 # MAKE SURE you set the application type to PERSONAL. Otherwise, you won't have access to intraday data series, resulting in 40X errors.
+INIT_REFRESH_TOKEN = os.environ.get("INIT_Refreshtoken") #
 client_id = os.environ.get("CLIENT_ID") or "your_application_client_ID" # Change this to your client ID
 client_secret = os.environ.get("CLIENT_SECRET") or "your_application_client_secret" # Change this to your client Secret
 DEVICENAME = os.environ.get("DEVICENAME") or "Your_Device_Name" # e.g. "Charge5"
@@ -156,7 +157,8 @@ def Get_New_Access_Token(client_id, client_secret):
     try:
         access_token, refresh_token = load_tokens_from_file()
     except FileNotFoundError:
-        refresh_token = input("No token file found. Please enter a valid refresh token : ")
+        ##refresh_token = input("No token file found. Please enter a valid refresh token : ")
+        refresh_token = INIT_REFRESH_TOKEN
     access_token, refresh_token = refresh_fitbit_tokens(client_id, client_secret, refresh_token)
     return access_token
 

@@ -17,7 +17,7 @@ services:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
       - TOKEN_FILE_PATH=/app/tokens/fitbit.token
       - OVERWRITE_LOG_FILE=True
-      - INFLUXDB_VERSION=1
+      - INFLUXDB_VERSION=2
       # Variables for influxdb 2.x ( you need to change the influxdb container config below accordingly )
       - INFLUXDB_BUCKET=your_bucket_name_here # for influxdb 2.x
       - INFLUXDB_ORG=your_org_here # for influxdb 2.x
@@ -30,6 +30,7 @@ services:
       - INFLUXDB_PASSWORD=fitbit_password # for influxdb 1.x
       - INFLUXDB_DATABASE=fitbit_database # for influxdb 1.x
       # MAKE SURE you set the application type to PERSONAL. Otherwise, you won't have access to intraday data series, resulting in 40X errors.
+      - INIT_Refreshtoken=your_refreshtoken #chnage this to your initial refreshtoken
       - CLIENT_ID=your_application_client_ID # Change this to your client ID
       - CLIENT_SECRET=your_application_client_secret # Change this to your client Secret
       - DEVICENAME=Your_Device_Name # e.g. "Charge5"

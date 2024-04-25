@@ -26,6 +26,7 @@ A script to fetch data from Fitbit servers using their API and store the data in
 -  INFLUXDB_USERNAME = 'your_influxdb_username'
 -  INFLUXDB_PASSWORD = 'your_influxdb_password'
 -  INFLUXDB_DATABASE = 'your_influxdb_database_name'
+-  INIT_Refreshtoken = "your_initial_fitbit_token"
 -  client_id = "your_application_client_ID"
 -  client_secret = "your_application_client_secret"
 -  DEVICENAME = "Your_Device_Name" # example - "Charge5"
