@@ -48,7 +48,6 @@ A script to fetch data from Fitbit servers using their API and store the data in
 #### Finally run : `docker compose up -d` ( to launch the full stack )
 
 ```
-version: '3.4'
 services:
   fitbit-fetch-data:
     restart: unless-stopped
