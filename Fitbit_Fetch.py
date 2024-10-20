@@ -575,7 +575,7 @@ if AUTO_DATE_RANGE:
     if len(date_list) > 3:
         logging.warn("Auto schedule update is not meant for more than 3 days at a time, please consider lowering the auto_update_date_range variable to aviod rate limit hit!")
     for date_str in date_list:
-        get_intraday_data_limit_1d(date_str, [('heart','HeartRate_Intraday','1sec'),('steps','Steps_Intraday','1min')]) # 2 queries x number of dates ( default 2)
+        get_intraday_data_limit_1d(date_str, [('heart','HeartRate_Intraday','1sec'),('steps','Steps_Intraday','15min'),('floors','Floors_Intraday','1min')]) # 3 queries x number of dates ( default 3)
     get_daily_data_limit_30d(start_date_str, end_date_str) # 3 queries
     get_daily_data_limit_100d(start_date_str, end_date_str) # 1 query
     get_daily_data_limit_365d(start_date_str, end_date_str) # 8 queries
