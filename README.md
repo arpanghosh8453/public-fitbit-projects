@@ -8,6 +8,26 @@ A script to fetch data from Fitbit servers using their API and store the data in
 ## Dashboard Example
 ![Dashboard](https://github.com/arpanghosh8453/public-fitbit-projects/blob/main/Grafana_Dashboard/Dashboard.png?raw=true)
 
+## Features
+
+- Automatic data collection from Fitbit API
+- Support for both InfluxDB 1.x and 2.x
+- Collects comprehensive health metrics including:
+  - Heart Rate Data (including intraday)
+  - Hourly steps Heatmap
+  - Daily Step Count
+  - Sleep Data and patterns
+  - Sleep regularity heatmap
+  - SpO2 Data
+  - Breathing Rate
+  - HRV
+  - Activity Minutes
+  - Device Battery Level
+  - And more...
+- Automated token refresh
+- Historical data backfilling
+- Rate limit aware data collection
+
 ## How to setup the script
 
 #### Set up influxdb 1.8 ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#influxdb) ). Create a user with a password and an empty database. 
@@ -101,3 +121,6 @@ services:
     container_name: grafana
     image: 'grafana/grafana:latest'
 ```
+## Deploy with Homeassistant integration
+
+User [@Jasonthefirst](https://github.com/Jasonthefirst) has developed a plugin (issue [#24](https://github.com/arpanghosh8453/public-fitbit-projects/issues/24) ) based on the python script which can be used to deploy the setup without docker. Please refer to [fitbit-ha-addon](https://gitlab.fristerspace.de/demian/fitbit-ha-addon) for the setup. 
