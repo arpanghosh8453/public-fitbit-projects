@@ -553,11 +553,15 @@ def fetch_latest_activities(end_date_str):
                 fields['steps'] = int(activity['steps'])
             starttime = datetime.fromisoformat(activity['startTime'].strip("Z"))
             utc_time = starttime.astimezone(pytz.utc).isoformat()
+            try:
+                extracted_activity_name = activity['activityName']
+            except KeyError as MissingKeyError:
+                extracted_activity_name = "Unknown-Activity"
             collected_records.append({
                 "measurement": "Activity Records",
                 "time": utc_time,
                 "tags": {
-                    "ActivityName": activity['activityName']
+                    "ActivityName": extracted_activity_name
                 },
                 "fields": fields
             })
