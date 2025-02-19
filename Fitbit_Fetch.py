@@ -86,7 +86,7 @@ def request_data_from_fitbit(url, headers={}, params={}, data={}, request_type="
             if response.status_code == 200: # Success
                 return response.json()
             elif response.status_code == 429: # API Limit reached
-                retry_after = int(response.headers["Retry-After"]) + 300
+                retry_after = int(response.headers["Fitbit-Rate-Limit-Reset"]) + 300 # Fitbit changed their headers.
                 logging.warning("Fitbit API limit reached. Error code : " + str(response.status_code) + ", Retrying in " + str(retry_after) + " seconds")
                 print("Fitbit API limit reached. Error code : " + str(response.status_code) + ", Retrying in " + str(retry_after) + " seconds")
                 time.sleep(retry_after)
