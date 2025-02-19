@@ -488,11 +488,12 @@ def get_daily_data_limit_365d(start_date_str, end_date_str):
                     "tags": {
                         "Device": DEVICENAME
                     },
+                    # Using get() method with a default value 0 to prevent keyerror ( see issue #31)
                     "fields": {
-                        "Normal" : data["value"]["heartRateZones"][0]["minutes"],
-                        "Fat Burn" :  data["value"]["heartRateZones"][1]["minutes"],
-                        "Cardio" :  data["value"]["heartRateZones"][2]["minutes"],
-                        "Peak" :  data["value"]["heartRateZones"][3]["minutes"]
+                        "Normal" : data["value"]["heartRateZones"][0].get("minutes", 0),
+                        "Fat Burn" :  data["value"]["heartRateZones"][1].get("minutes", 0),
+                        "Cardio" :  data["value"]["heartRateZones"][2].get("minutes", 0),
+                        "Peak" :  data["value"]["heartRateZones"][3].get("minutes", 0)
                     }
                 })
             if "restingHeartRate" in data["value"]:
