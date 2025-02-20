@@ -722,7 +722,7 @@
           "measurement": "Steps_Intraday",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: \"tower\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Total Steps\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Total Steps\")\n  |> aggregateWindow(every: v.windowPeriod, fn: last, createEmpty: false)\n  |> yield(name: \"last\")",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -3397,7 +3397,7 @@
           "measurement": "Total Steps",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: \"tower\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Records\")\n  |> filter(fn: (r) => r[\"_field\"] == \"steps\")\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.ActivityName}))\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\n  |> yield(name: \"sum\")",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Records\")\n  |> filter(fn: (r) => r[\"_field\"] == \"steps\")\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field: r.ActivityName}))\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\n  |> yield(name: \"sum\")",
           "queryType": "randomWalk",
           "rawQuery": false,
           "refId": "A",
@@ -3537,7 +3537,7 @@
           "measurement": "Activity Minutes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: \"tower\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Records\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration\")\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:r.ActivityName}))\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\n  |> yield(name: \"sum\")",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Records\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration\")\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:r.ActivityName}))\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\n  |> yield(name: \"sum\")",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -3730,7 +3730,7 @@
             "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
-          "query": "from(bucket: \"tower\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HR zones\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Normal\" or r[\"_field\"] == \"Peak\" or r[\"_field\"] == \"Fat Burn\" or r[\"_field\"] == \"Cardio\")\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:r[\"_field\"]}))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"HR zones\")\n  |> filter(fn: (r) => r[\"_field\"] == \"Normal\" or r[\"_field\"] == \"Peak\" or r[\"_field\"] == \"Fat Burn\" or r[\"_field\"] == \"Cardio\")\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:r[\"_field\"]}))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
@@ -4117,7 +4117,7 @@
           "measurement": "calories",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "from(bucket: \"tower\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"calories\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:\"Calories\"}))\n  |> yield(name: \"median\")",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"calories\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> aggregateWindow(every: v.windowPeriod, fn: median, createEmpty: false)\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:\"Calories\"}))\n  |> yield(name: \"median\")",
           "queryType": "randomWalk",
           "refId": "A",
           "resultFormat": "time_series",
@@ -4342,7 +4342,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "from(bucket: \"tower\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Records\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration\")\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:r.ActivityName}))\n  |> aggregateWindow(every: 1h, fn: sum, createEmpty: false)\n  |> yield(name: \"sum\")",
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Activity Records\")\n  |> filter(fn: (r) => r[\"_field\"] == \"duration\")\n  |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:r.ActivityName}))\n  |> aggregateWindow(every: 1h, fn: sum, createEmpty: false)\n  |> yield(name: \"sum\")",
           "refId": "A"
         }
       ],
