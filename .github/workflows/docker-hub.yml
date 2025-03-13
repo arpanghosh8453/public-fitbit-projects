@@ -23,7 +23,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build the Docker image (multi-arch)
-        run: docker buildx build --platform linux/amd64,linux/arm64 --load -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest .
+        run: docker buildx build --platform linux/amd64,linux/arm64 --push -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest .
 
   test:
     runs-on: ubuntu-latest
