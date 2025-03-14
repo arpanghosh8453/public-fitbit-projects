@@ -3,9 +3,11 @@
 </p>
 
 # Fitbit Fetch script and Influxdb Grafana integration
-A script to fetch data from Fitbit servers using their API and store the data in a local influxdb database. 
+
+A script to fetch data from Fitbit servers using their API and store the data in a local influxdb database.
 
 ## Dashboard Example
+
 ![Dashboard](https://github.com/arpanghosh8453/public-fitbit-projects/blob/main/Grafana_Dashboard/Dashboard.png?raw=true)
 
 ## Features
@@ -30,42 +32,53 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 ## How to setup the script
 
-#### Set up influxdb 1.8 ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#influxdb) ). Create a user with a password and an empty database. 
+Set up influxdb 1.8 ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#influxdb) ). Create a user with a password and an empty database.
 
-#### Set up grafana recent release ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#grafana) )
+Set up grafana recent release ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#grafana) )
 
-#### Use the requirements.txt file to install the required packages. 
+Use the requirements.txt file to install the required packages.
 
-#### Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step after following OAuth setup )
+Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step after following OAuth setup )
 
-❗❗ The Fitbit application must be personal type for the access of intraday data series ❗❗ - Otherwise you might encounter `KeyError: 'activities-heart-intraday'` Error. 
+❗ **The Fitbit application must be personal type for the access of intraday data series** ❗ - Otherwise you might encounter `KeyError: 'activities-heart-intraday'` Error.
 
-#### Update the following variables in the script ( use the influxdb-v2 specific variables for influxdb-v2 instance )
--  FITBIT_LOG_FILE_PATH = "your/expected/log/file/location/path"
--  TOKEN_FILE_PATH = "your/expected/token/file/location/path"
--  INFLUXDB_USERNAME = 'your_influxdb_username'
--  INFLUXDB_PASSWORD = 'your_influxdb_password'
--  INFLUXDB_DATABASE = 'your_influxdb_database_name'
--  client_id = "your_application_client_ID"
--  client_secret = "your_application_client_secret"
--  DEVICENAME = "Your_Device_Name" # example - "Charge5"
--  LOCAL_TIMEZONE=Automatic # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically). 
+Update the following variables in the script ( use the influxdb-v2 specific variables for influxdb-v2 instance )
 
-#### Run the script; it will request a refresh token as input for the first run to set up the token file. You can check the logs to see the work in progress. The script, by default, keeps running forever, calling different functions at scheduled intervals. 
+- FITBIT_LOG_FILE_PATH = "your/expected/log/file/location/path"
+- TOKEN_FILE_PATH = "your/expected/token/file/location/path"
+- INFLUXDB_USERNAME = 'your_influxdb_username'
+- INFLUXDB_PASSWORD = 'your_influxdb_password'
+- INFLUXDB_DATABASE = 'your_influxdb_database_name'
+- client_id = "your_application_client_ID"
+- client_secret = "your_application_client_secret"
+- DEVICENAME = "Your_Device_Name" # example - "Charge5"
+- LOCAL_TIMEZONE=Automatic # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically).
 
-#### Finally, add the influxdb database as a Data source in Grafana, and use the given Dashboard json file to replicate the dashboard quickly. 
+Run the script; it will request a refresh token as input for the first run to set up the token file. You can check the logs to see the work in progress. The script, by default, keeps running forever, calling different functions at scheduled intervals.
 
-#### You can use the Fitbit_Fetch_Autostart.service template to set up an auto-starting ( and auto-restarting in case of temporary failure ) service in Linux based system ( or WSL )
+Finally, add the influxdb database as a Data source in Grafana, and use the given Dashboard json file to replicate the dashboard quickly.
 
-## Full Stack install with Docker 
+You can use the Fitbit_Fetch_Autostart.service template to set up an auto-starting ( and auto-restarting in case of temporary failure ) service in Linux based system ( or WSL )
 
-#### Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step after following OAuth setup )
-#### Initial setup : Create a folder named fitbit-fetch-data, cd into the folder, create a docker-compose.yml file with the below compose example ( Change the enviornment variables accordingly )
-#### Create folders named logs and tokens inside and make sure to chown them for uid 1000 ( otherwise you may get read/write permission denied errors )
-#### Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data`
-#### Enter the refresh token you obtained from your fitbit account and hit enter. ❗❗ The Fitbit application type must be personal for intraday data access ❗❗- Otherwise you might encounter `KeyError: 'activities-heart-intraday'` Error. 
-#### Then exit out with ctrl + c ( after you see the successful api requests in the stdout log )
-#### Finally run : `docker compose up -d` ( to launch the full stack )
+## Full Stack install with Docker
+
+Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step after following OAuth setup )
+
+Initial setup : Create a folder named fitbit-fetch-data, cd into the folder, create a docker-compose.yml file with the below compose example ( Change the enviornment variables accordingly )
+
+Create folders named logs and tokens inside and make sure to chown them for uid 1000 ( otherwise you may get read/write permission denied errors )
+
+Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data`
+
+Enter the refresh token you obtained from your fitbit account and hit enter. ❗ **The Fitbit application type must be personal for intraday data access** ❗- Otherwise you might encounter `KeyError: 'activities-heart-intraday'` Error.
+
+Then exit out with ctrl + c ( after you see the successful api requests in the stdout log )
+
+Finally run : `docker compose up -d` ( to launch the full stack )
+
+In some cases, for the Grafana container, you may need to chown the corresponding mounted folders as *472*:*472* if you are having read/write errors inside the grafana container.
+
+To use the Grafana dashboard, please use the [JSON files](https://github.com/arpanghosh8453/public-fitbit-projects/tree/main/Grafana_Dashboard) downloaded directly from the Grafana_Dashboard of the project (there are separate versions of the dashboard for influxdb v1 and v2) or use the import code **23088** (for influxdb-v1) or **23090** (for influxdb-v2) to pull them directly from the Grafana dashboard cloud.
 
 ```
 services:
@@ -121,11 +134,13 @@ services:
     container_name: grafana
     image: 'grafana/grafana:latest'
 ```
+
 ## Deploy with Homeassistant integration
 
-User [@Jasonthefirst](https://github.com/Jasonthefirst) has developed a plugin (issue [#24](https://github.com/arpanghosh8453/public-fitbit-projects/issues/24) ) based on the python script which can be used to deploy the setup without docker. Please refer to [fitbit-ha-addon](https://gitlab.fristerspace.de/demian/fitbit-ha-addon) for the setup. 
+User [@Jasonthefirst](https://github.com/Jasonthefirst) has developed a plugin (issue [#24](https://github.com/arpanghosh8453/public-fitbit-projects/issues/24) ) based on the python script which can be used to deploy the setup without docker. Please refer to [fitbit-ha-addon](https://gitlab.fristerspace.de/demian/fitbit-ha-addon) for the setup.
 
-## Support me 
-If you enjoy the script and love how it works with simple setup, please consider supporting me with a coffee ❤. You can view more detailed health statistics with this setup than paying a subscription fee to Fitbit, thanks to their free REST API services. 
+## Support me
+
+If you enjoy the script and love how it works with simple setup, please consider supporting me with a coffee ❤. You can view more detailed health statistics with this setup than paying a subscription fee to Fitbit, thanks to their free REST API services.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A84F3DP)

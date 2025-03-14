@@ -27,7 +27,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.4.1"
+      "version": "11.5.2"
     },
     {
       "type": "datasource",
@@ -67,6 +67,12 @@
     },
     {
       "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    },
+    {
+      "type": "panel",
       "id": "timeseries",
       "name": "Time series",
       "version": ""
@@ -99,7 +105,6 @@
   "graphTooltip": 0,
   "id": null,
   "links": [],
-  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
@@ -115,118 +120,26 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "datasource",
-        "uid": "-- Mixed --"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "displayName": "Battery remaining",
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "semi-dark-red",
-                "value": null
-              },
-              {
-                "color": "semi-dark-red",
-                "value": 0
-              },
-              {
-                "color": "semi-dark-red",
-                "value": 25
-              },
-              {
-                "color": "semi-dark-orange",
-                "value": 35
-              },
-              {
-                "color": "semi-dark-yellow",
-                "value": 55
-              },
-              {
-                "color": "semi-dark-green",
-                "value": 75
-              },
-              {
-                "color": "semi-dark-blue",
-                "value": 85
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
       "gridPos": {
-        "h": 6,
+        "h": 3,
         "w": 3,
         "x": 0,
         "y": 1
       },
-      "hideTimeOverride": true,
-      "id": 59,
+      "id": 65,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "last"
-          ],
-          "fields": "",
-          "values": false
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
         },
-        "showPercentChange": false,
-        "textMode": "value",
-        "wideLayout": true
+        "content": "<a href='https://ko-fi.com/A0A84F3DP' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>",
+        "mode": "html"
       },
-      "pluginVersion": "10.4.1",
-      "targets": [
-        {
-          "alias": "Battery remaining",
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${DS_HEALTH_STATS}"
-          },
-          "groupBy": [],
-          "measurement": "DeviceBatteryLevel",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "value"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "timeFrom": "6h",
-      "title": "Device Battery Level",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        }
-      ],
+      "pluginVersion": "11.5.2",
+      "title": "Support Me!",
       "transparent": true,
-      "type": "stat"
+      "type": "text"
     },
     {
       "datasource": {
@@ -245,6 +158,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 34,
             "gradientMode": "opacity",
@@ -398,11 +312,13 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "10.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Heart rate",
@@ -643,6 +559,121 @@
           "color": {
             "mode": "thresholds"
           },
+          "displayName": "Battery remaining",
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "semi-dark-red",
+                "value": null
+              },
+              {
+                "color": "semi-dark-red",
+                "value": 0
+              },
+              {
+                "color": "semi-dark-red",
+                "value": 25
+              },
+              {
+                "color": "semi-dark-orange",
+                "value": 35
+              },
+              {
+                "color": "semi-dark-yellow",
+                "value": 55
+              },
+              {
+                "color": "semi-dark-green",
+                "value": 75
+              },
+              {
+                "color": "semi-dark-blue",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 4
+      },
+      "hideTimeOverride": true,
+      "id": 59,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "alias": "Battery remaining",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_HEALTH_STATS}"
+          },
+          "groupBy": [],
+          "measurement": "DeviceBatteryLevel",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": "6h",
+      "title": "Device Battery Level",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        }
+      ],
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "displayName": "Resting HR",
           "mappings": [],
           "max": 100,
@@ -676,7 +707,7 @@
         "h": 6,
         "w": 3,
         "x": 0,
-        "y": 7
+        "y": 8
       },
       "id": 27,
       "options": {
@@ -695,7 +726,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -749,6 +780,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 1,
+            "barWidthFactor": 0.6,
             "drawStyle": "bars",
             "fillOpacity": 100,
             "gradientMode": "opacity",
@@ -828,11 +860,13 @@
           "showLegend": false
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Steps",
@@ -935,7 +969,7 @@
         "h": 6,
         "w": 3,
         "x": 0,
-        "y": 13
+        "y": 14
       },
       "id": 30,
       "options": {
@@ -954,7 +988,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -1028,6 +1062,7 @@
             "axisSoftMax": 100,
             "axisSoftMin": 90,
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 41,
             "gradientMode": "opacity",
@@ -1069,7 +1104,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1177,11 +1213,13 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "SpO2 Intraday",
@@ -1249,7 +1287,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "semi-dark-red"
+                "color": "semi-dark-red",
+                "value": null
               },
               {
                 "color": "semi-dark-orange",
@@ -1273,7 +1312,7 @@
         "h": 7,
         "w": 3,
         "x": 0,
-        "y": 19
+        "y": 20
       },
       "id": 37,
       "options": {
@@ -1292,7 +1331,7 @@
         "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "SpO2",
@@ -1422,7 +1461,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1453,11 +1493,13 @@
         "rowHeight": 1,
         "showValue": "auto",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Sleep levels",
@@ -1515,7 +1557,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue"
+                "color": "blue",
+                "value": null
               },
               {
                 "color": "semi-dark-red",
@@ -1543,7 +1586,7 @@
         "h": 9,
         "w": 3,
         "x": 0,
-        "y": 26
+        "y": 27
       },
       "id": 50,
       "options": {
@@ -1561,7 +1604,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Total Asleep",
@@ -1627,6 +1670,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 11,
             "gradientMode": "hue",
@@ -1662,7 +1706,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1688,11 +1733,13 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Sleep levels",
@@ -1756,7 +1803,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 36
       },
       "id": 52,
       "panels": [],
@@ -1799,7 +1846,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1876,7 +1924,7 @@
         "h": 10,
         "w": 11,
         "x": 0,
-        "y": 36
+        "y": 37
       },
       "id": 44,
       "options": {
@@ -1894,13 +1942,15 @@
         "showValue": "auto",
         "stacking": "normal",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 100
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Deep",
@@ -2117,7 +2167,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2133,7 +2184,7 @@
         "h": 10,
         "w": 7,
         "x": 11,
-        "y": 36
+        "y": 37
       },
       "id": 45,
       "options": {
@@ -2151,13 +2202,15 @@
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
         "xTickLabelRotation": 90,
         "xTickLabelSpacing": 100
       },
-      "pluginVersion": "10.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Efficiency",
@@ -2247,7 +2300,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "light-blue"
+                "color": "light-blue",
+                "value": null
               },
               {
                 "color": "light-green",
@@ -2279,7 +2333,7 @@
         "h": 10,
         "w": 6,
         "x": 18,
-        "y": 36
+        "y": 37
       },
       "id": 63,
       "options": {
@@ -2300,6 +2354,8 @@
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
@@ -2307,6 +2363,7 @@
         "xTickLabelRotation": -90,
         "xTickLabelSpacing": 100
       },
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Relative Skin Temp ",
@@ -2423,7 +2480,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 46
+        "y": 47
       },
       "id": 48,
       "options": {
@@ -2445,11 +2502,13 @@
           "values": false
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Deep",
@@ -2673,7 +2732,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2688,7 +2748,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 46
+        "y": 47
       },
       "id": 42,
       "options": {
@@ -2737,7 +2797,7 @@
         "to": "0",
         "valueFieldName": "Value"
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "2.0.1",
       "targets": [
         {
           "alias": "Sleep Regularity",
@@ -2789,7 +2849,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 55
+        "y": 56
       },
       "id": 56,
       "panels": [],
@@ -2816,6 +2876,7 @@
             "axisSoftMax": 70,
             "axisSoftMin": 50,
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 41,
             "gradientMode": "opacity",
@@ -2855,7 +2916,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2902,7 +2964,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 56
+        "y": 57
       },
       "id": 32,
       "options": {
@@ -2918,11 +2980,13 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Resting HR",
@@ -2990,6 +3054,7 @@
             "axisSoftMax": 180,
             "axisSoftMin": 40,
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 41,
             "gradientMode": "opacity",
@@ -3029,7 +3094,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3106,7 +3172,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 56
+        "y": 57
       },
       "id": 35,
       "options": {
@@ -3122,11 +3188,13 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "DailyRmssd",
@@ -3194,6 +3262,7 @@
             "axisSoftMax": 100,
             "axisSoftMin": 88,
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 41,
             "gradientMode": "opacity",
@@ -3233,7 +3302,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3310,7 +3380,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 65
+        "y": 66
       },
       "id": 7,
       "options": {
@@ -3326,11 +3396,13 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "SpO2",
@@ -3398,6 +3470,7 @@
             "axisSoftMax": 18,
             "axisSoftMin": 10,
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 41,
             "gradientMode": "opacity",
@@ -3437,7 +3510,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3484,7 +3558,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 65
+        "y": 66
       },
       "id": 5,
       "options": {
@@ -3500,11 +3574,13 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Breathing Rate",
@@ -3577,7 +3653,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-red"
+                "color": "dark-red",
+                "value": null
               },
               {
                 "color": "light-yellow",
@@ -3593,7 +3670,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 72
+        "y": 73
       },
       "id": 29,
       "options": {
@@ -3605,7 +3682,7 @@
         "showValueIndicator": true,
         "to": "22"
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "2.0.1",
       "targets": [
         {
           "alias": "Hourly walk heatmap",
@@ -3697,7 +3774,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3712,7 +3790,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 72
+        "y": 73
       },
       "id": 17,
       "options": {
@@ -3730,6 +3808,8 @@
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
@@ -3737,7 +3817,7 @@
         "xTickLabelRotation": -45,
         "xTickLabelSpacing": -100
       },
-      "pluginVersion": "10.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
@@ -3805,7 +3885,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3836,7 +3917,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 81
+        "y": 82
       },
       "id": 13,
       "options": {
@@ -3854,13 +3935,15 @@
         "showValue": "never",
         "stacking": "normal",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 100
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Light Activity",
@@ -4029,7 +4112,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4044,7 +4128,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 81
+        "y": 82
       },
       "id": 15,
       "options": {
@@ -4062,13 +4146,15 @@
         "showValue": "auto",
         "stacking": "normal",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
         "xTickLabelRotation": -45,
         "xTickLabelSpacing": 100
       },
-      "pluginVersion": "10.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Fat Burn",
@@ -4290,7 +4376,7 @@
         "h": 8,
         "w": 9,
         "x": 1,
-        "y": 91
+        "y": 92
       },
       "id": 47,
       "options": {
@@ -4314,11 +4400,13 @@
         },
         "text": {},
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Light Activity",
@@ -4530,7 +4618,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4545,7 +4634,7 @@
         "h": 8,
         "w": 7,
         "x": 10,
-        "y": 91
+        "y": 92
       },
       "id": 23,
       "options": {
@@ -4563,13 +4652,15 @@
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
         "xTickLabelRotation": -45,
         "xTickLabelSpacing": 100
       },
-      "pluginVersion": "10.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Total Distance",
@@ -4654,7 +4745,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4685,7 +4777,7 @@
         "h": 8,
         "w": 7,
         "x": 17,
-        "y": 91
+        "y": 92
       },
       "id": 21,
       "options": {
@@ -4703,13 +4795,15 @@
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
         "xTickLabelRotation": 90,
         "xTickLabelSpacing": 200
       },
-      "pluginVersion": "10.4.0",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Total Calories",
@@ -4809,7 +4903,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -4825,7 +4920,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 99
+        "y": 100
       },
       "id": 9,
       "options": {
@@ -4839,11 +4934,13 @@
         "rowHeight": 0.9,
         "showValue": "never",
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
       },
-      "pluginVersion": "7.5.2",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Heart rate",
@@ -4921,7 +5018,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "semi-dark-blue"
+                "color": "semi-dark-blue",
+                "value": null
               },
               {
                 "color": "semi-dark-green",
@@ -4964,7 +5062,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 103
+        "y": 104
       },
       "id": 34,
       "options": {
@@ -4987,7 +5085,7 @@
           }
         ]
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Walk",
@@ -5102,46 +5200,6 @@
       "type": "table"
     },
     {
-      "alert": {
-        "alertRuleTags": {},
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                25
-              ],
-              "type": "lt"
-            },
-            "operator": {
-              "type": "and"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "avg"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "keep_state",
-        "for": "5m",
-        "frequency": "1m",
-        "handler": 1,
-        "message": "Device Battery Low",
-        "name": "Charge 4 Battery Level alert",
-        "noDataState": "keep_state",
-        "notifications": [
-          {
-            "uid": "6172dkrMz"
-          }
-        ]
-      },
       "datasource": {
         "type": "influxdb",
         "uid": "${DS_HEALTH_STATS}"
@@ -5158,6 +5216,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 41,
             "gradientMode": "opacity",
@@ -5197,7 +5256,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red"
+                "color": "red",
+                "value": null
               },
               {
                 "color": "transparent",
@@ -5244,7 +5304,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 114
+        "y": 115
       },
       "id": 19,
       "options": {
@@ -5255,11 +5315,13 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "9.0.5",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Battery Percentage",
@@ -5325,6 +5387,7 @@
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -5365,7 +5428,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "super-light-blue"
+                "color": "super-light-blue",
+                "value": null
               }
             ]
           },
@@ -5408,7 +5472,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 121
+        "y": 122
       },
       "id": 64,
       "options": {
@@ -5419,11 +5483,13 @@
           "showLegend": true
         },
         "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 600,
           "mode": "multi",
           "sort": "none"
         }
       },
-      "pluginVersion": "9.0.5",
+      "pluginVersion": "11.5.2",
       "targets": [
         {
           "alias": "Battery depletion rate [ d(battery level)/dt ]",
@@ -5478,31 +5544,28 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
-  "schemaVersion": 39,
+  "refresh": "30s",
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "America/Toronto",
-          "value": "America/Toronto"
+          "text": "Asia/Kolkata",
+          "value": "Asia/Kolkata"
         },
         "description": "Determines the time zone for grouping by day",
-        "hide": 0,
         "includeAll": false,
         "label": "Time Zone",
-        "multi": false,
         "name": "TimeZone",
         "options": [
           {
-            "selected": true,
+            "selected": false,
             "text": "America/Toronto",
             "value": "America/Toronto"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "Asia/Kolkata",
             "value": "Asia/Kolkata"
           },
@@ -5513,8 +5576,6 @@
           }
         ],
         "query": "America/Toronto, Asia/Kolkata, Europe/Berlin,",
-        "queryValue": "",
-        "skipUrlSync": false,
         "type": "custom"
       }
     ]
@@ -5527,6 +5588,6 @@
   "timezone": "browser",
   "title": "Health Stats",
   "uid": "_cl7FMC4z",
-  "version": 85,
+  "version": 5,
   "weekStart": ""
 }
