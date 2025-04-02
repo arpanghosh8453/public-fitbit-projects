@@ -609,9 +609,9 @@ def fetch_latest_activities(end_date_str):
                     TCX_record_count += 1
                     try:
                         get_tcx_data(tcx_link, ActivityID)
-                        logging.info("Recorded TCX GPS data for " + tcx_url)
+                        logging.info("Recorded TCX GPS data for " + tcx_link)
                     except Exception as tcx_exception:
-                        logging.error("Failed to get GPS Data for " + tcx_link + " : " + tcx_exception)
+                        logging.error("Failed to get GPS Data for " + tcx_link + " : " + str(tcx_exception))
         logging.info("Fetched 50 recent activities before date " + end_date_str)
     else:
         logging.error("Fetching 50 recent activities failed : before date " + end_date_str)
