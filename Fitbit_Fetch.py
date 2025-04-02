@@ -9,6 +9,7 @@ from influxdb.exceptions import InfluxDBClientError
 from influxdb_client import InfluxDBClient as InfluxDBClient2
 from influxdb_client.client.exceptions import InfluxDBError
 from influxdb_client.client.write_api import SYNCHRONOUS
+import xml.etree.ElementTree as ET
 
 # %% [markdown]
 # ## Variables
@@ -534,9 +535,44 @@ def get_daily_data_limit_none(start_date_str, end_date_str):
     else:
         logging.error("Recording failed : Avg SPO2 for date " + start_date_str + " to " + end_date_str)
 
-# Fetches latest activities from record ( upto last 100 )
+# fetches TCX GPS data
+def get_tcx_data(tcx_url, ActivityID):
+    headers = {
+        "Authorization": f"Bearer {ACCESS_TOKEN}",
+        "Accept": "application/x-www-form-urlencoded"
+    }
+    params = {
+            'includePartialTCX': 'false'
+        }
+    response = requests.get(tcx_url, headers=headers, params=params)
+    if response.status_code != 200:
+        logging.error(f"Error fetching TCX file: {response.status_code}, {response.text}")
+    else:
+        root = ET.fromstring(response.text)
+        namespace = {"ns": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}
+        for trkpt in root.findall(".//ns:Trackpoint", namespace):
+            time = trkpt.find("ns:Time", namespace)
+            lat = trkpt.find(".//ns:LatitudeDegrees", namespace)
+            lon = trkpt.find(".//ns:LongitudeDegrees", namespace)
+
+            if time is not None and lat is not None:
+                collected_records.append({
+                        "measurement": "GPS",
+                        "tags": {
+                            "ActivityID": ActivityID
+                        },
+                        "time": datetime.fromisoformat(time.text.strip("Z")).astimezone(pytz.utc).isoformat(),
+                        "fields": {
+                            "lat": float(lat.text),
+                            "long": float(lon.text)
+                        }
+                    })
+
+# Fetches latest activities from record ( upto last 50 )
 def fetch_latest_activities(end_date_str):
-    recent_activities_data = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/list.json', params={'beforeDate': end_date_str, 'sort':'desc', 'limit':50, 'offset':0})
+    next_end_date_str = (datetime.strptime(end_date_str, "%Y-%m-%d") + timedelta(days=1)).strftime("%Y-%m-%d")
+    recent_activities_data = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/list.json', params={'beforeDate': next_end_date_str, 'sort':'desc', 'limit':50, 'offset':0})
+    TCX_record_count, TCX_record_limit = 0,10
     if recent_activities_data != None:
         for activity in recent_activities_data['activities']:
             fields = {}
@@ -558,6 +594,7 @@ def fetch_latest_activities(end_date_str):
                 extracted_activity_name = activity['activityName']
             except KeyError as MissingKeyError:
                 extracted_activity_name = "Unknown-Activity"
+            ActivityID = utc_time + "-" + extracted_activity_name
             collected_records.append({
                 "measurement": "Activity Records",
                 "time": utc_time,
@@ -566,6 +603,15 @@ def fetch_latest_activities(end_date_str):
                 },
                 "fields": fields
             })
+            if activity.get("hasGps", False):
+                tcx_link = activity.get("tcxLink", False)
+                if tcx_link and TCX_record_count <= TCX_record_limit:
+                    TCX_record_count += 1
+                    try:
+                        get_tcx_data(tcx_link, ActivityID)
+                        logging.info("Recorded TCX GPS data for " + tcx_url)
+                    except Exception as tcx_exception:
+                        logging.error("Failed to get GPS Data for " + tcx_link + " : " + tcx_exception)
         logging.info("Fetched 50 recent activities before date " + end_date_str)
     else:
         logging.error("Fetching 50 recent activities failed : before date " + end_date_str)
