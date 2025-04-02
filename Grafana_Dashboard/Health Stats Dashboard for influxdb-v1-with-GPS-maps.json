@@ -4938,7 +4938,7 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "continuous-reds"
+            "mode": "palette-classic"
           },
           "custom": {
             "fillOpacity": 100,
@@ -4949,32 +4949,23 @@
             },
             "insertNulls": false,
             "lineWidth": 0,
-            "spanNulls": false
+            "spanNulls": 3600000
           },
           "mappings": [
             {
               "options": {
-                "0": {
+                "1": {
+                  "color": "light-green",
+                  "index": 1,
+                  "text": "On Hand"
+                },
+                "NaN": {
+                  "color": "semi-dark-red",
+                  "index": 0,
                   "text": "Off Hand"
-                },
-                "Off Hand": {
-                  "color": "#E02F44"
-                },
-                "On Hand": {
-                  "color": "#96D98D"
                 }
               },
               "type": "value"
-            },
-            {
-              "options": {
-                "from": 1,
-                "result": {
-                  "text": "On Hand"
-                },
-                "to": 300
-              },
-              "type": "range"
             }
           ],
           "thresholds": {
@@ -5068,6 +5059,33 @@
         }
       ],
       "title": "Band wearing ",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Heart rate"
+                }
+              },
+              "operator": "/",
+              "right": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Heart rate"
+                }
+              }
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
       "transparent": true,
       "type": "state-timeline"
     },
@@ -5680,6 +5698,6 @@
   "timezone": "browser",
   "title": "Health Stats",
   "uid": "_cl7FMC4z",
-  "version": 60,
+  "version": 61,
   "weekStart": ""
 }
