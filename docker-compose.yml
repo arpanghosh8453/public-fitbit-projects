@@ -1,4 +1,3 @@
-version: '3.4'
 services:
 # Initial setup. Run the following command first and enter a valie fitbit refresh token
 # make sure the mapped logs and tokens folders exists and owned by 1000 uid, otherwise you may get permission denied error. 
