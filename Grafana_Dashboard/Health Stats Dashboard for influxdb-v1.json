@@ -413,6 +413,10 @@
                   "value"
                 ],
                 "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
               }
             ]
           ],
@@ -423,7 +427,7 @@
           }
         }
       ],
-      "timeFrom": "1h",
+      "timeFrom": "24h",
       "title": "Last Sync ",
       "transparent": true,
       "type": "stat"
@@ -5876,6 +5880,6 @@
   "timezone": "browser",
   "title": "Health Stats",
   "uid": "_cl7FMC4z",
-  "version": 71,
+  "version": 75,
   "weekStart": ""
 }
