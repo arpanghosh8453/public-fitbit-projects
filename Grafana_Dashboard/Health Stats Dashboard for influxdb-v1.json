@@ -2040,7 +2040,7 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "1d"
               ],
               "type": "time"
             },
@@ -2069,7 +2069,7 @@
               },
               {
                 "params": [],
-                "type": "distinct"
+                "type": "mean"
               }
             ]
           ],
@@ -2300,7 +2300,7 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "1d"
               ],
               "type": "time"
             },
@@ -2329,7 +2329,7 @@
               },
               {
                 "params": [],
-                "type": "distinct"
+                "type": "mean"
               }
             ]
           ],
@@ -2450,7 +2450,20 @@
             "type": "influxdb",
             "uid": "${DS_HEALTH_STATS}"
           },
-          "groupBy": [],
+          "groupBy": [
+            {
+              "params": [
+                "1d"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "measurement": "Skin Temperature Variation",
           "orderByTime": "ASC",
           "policy": "default",
@@ -2463,6 +2476,10 @@
                   "RelativeValue"
                 ],
                 "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
               }
             ]
           ],
@@ -2965,7 +2982,7 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
+            "insertNulls": 86400000,
             "lineInterpolation": "smooth",
             "lineStyle": {
               "dash": [
@@ -3143,7 +3160,7 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
+            "insertNulls": 86400000,
             "lineInterpolation": "smooth",
             "lineStyle": {
               "dash": [
@@ -3351,7 +3368,7 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
+            "insertNulls": 86400000,
             "lineInterpolation": "smooth",
             "lineStyle": {
               "dash": [
@@ -3559,7 +3576,7 @@
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
+            "insertNulls": 86400000,
             "lineInterpolation": "smooth",
             "lineStyle": {
               "dash": [
@@ -4892,7 +4909,7 @@
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "1d"
               ],
               "type": "time"
             },
@@ -4919,7 +4936,7 @@
               },
               {
                 "params": [],
-                "type": "distinct"
+                "type": "mean"
               }
             ]
           ],
@@ -4949,7 +4966,7 @@
             },
             "insertNulls": false,
             "lineWidth": 0,
-            "spanNulls": 3600000
+            "spanNulls": false
           },
           "mappings": [
             {
@@ -4980,8 +4997,7 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
@@ -5499,6 +5515,151 @@
           "color": {
             "mode": "thresholds"
           },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "light-green",
+                "value": 1728000000000
+              },
+              {
+                "color": "light-red",
+                "value": 3456000000000
+              },
+              {
+                "color": "semi-dark-red",
+                "value": 5184000000000
+              }
+            ]
+          },
+          "unit": "dateTimeFromNow"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 3,
+        "x": 0,
+        "y": 117
+      },
+      "id": 69,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^Time$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "DeviceBatteryLevel",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT time FROM \"DeviceBatteryLevel\" WHERE DERIVATIVE(\"value\", 1s) > 0\n",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              },
+              {
+                "params": [
+                  "5m"
+                ],
+                "type": "derivative"
+              }
+            ]
+          ],
+          "tags": [],
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_HEALTH_STATS}"
+          }
+        }
+      ],
+      "title": "Last Charge",
+      "transformations": [
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "greater",
+                  "options": {
+                    "value": "0.2"
+                  }
+                },
+                "fieldName": "DeviceBatteryLevel.derivative"
+              }
+            ],
+            "match": "any",
+            "type": "include"
+          }
+        },
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": true,
+            "mode": "reduceFields",
+            "reducers": [
+              "last"
+            ]
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_HEALTH_STATS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
           "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
@@ -5508,7 +5669,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 14,
             "gradientMode": "scheme",
             "hideFrom": {
               "legend": false,
@@ -5569,8 +5730,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 24,
-        "x": 0,
+        "w": 21,
+        "x": 3,
         "y": 117
       },
       "id": 19,
@@ -5638,15 +5799,15 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "30s",
+  "refresh": "5m",
   "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "text": "Asia/Kolkata",
-          "value": "Asia/Kolkata"
+          "text": "Europe/Berlin",
+          "value": "Europe/Berlin"
         },
         "description": "Determines the time zone for grouping by day",
         "includeAll": false,
@@ -5659,17 +5820,17 @@
             "value": "America/Toronto"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "Asia/Kolkata",
             "value": "Asia/Kolkata"
           },
           {
             "selected": false,
-            "text": "Europe/Berlin",
-            "value": "Europe/Berlin"
+            "text": "Europe/Budapest",
+            "value": "Europe/Budapest"
           }
         ],
-        "query": "America/Toronto, Asia/Kolkata, Europe/Berlin,",
+        "query": "America/Toronto, Asia/Kolkata, Europe/Budapest",
         "type": "custom"
       },
       {
@@ -5698,6 +5859,6 @@
   "timezone": "browser",
   "title": "Health Stats",
   "uid": "_cl7FMC4z",
-  "version": 61,
+  "version": 66,
   "weekStart": ""
 }
