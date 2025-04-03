@@ -70,7 +70,7 @@ def request_data_from_fitbit(url, headers={}, params={}, data={}, request_type="
     retry_attempts = 0
     logging.debug("Requesting data from fitbit via Url : " + url)
     while True: # Unlimited Retry attempts
-        if request_type == "get":
+        if request_type == "get" and headers == {}:
             headers = {
                 "Authorization": f"Bearer {ACCESS_TOKEN}",
                 "Accept": "application/json",
@@ -85,7 +85,10 @@ def request_data_from_fitbit(url, headers={}, params={}, data={}, request_type="
                 raise Exception("Invalid request type " + str(request_type))
         
             if response.status_code == 200: # Success
-                return response.json()
+                if url.endswith(".tcx"): # TCX XML file for GPS data
+                    return response
+                else:
+                    return response.json()
             elif response.status_code == 429: # API Limit reached
                 retry_after = int(response.headers["Fitbit-Rate-Limit-Reset"]) + 300 # Fitbit changed their headers.
                 logging.warning("Fitbit API limit reached. Error code : " + str(response.status_code) + ", Retrying in " + str(retry_after) + " seconds")
@@ -537,14 +540,14 @@ def get_daily_data_limit_none(start_date_str, end_date_str):
 
 # fetches TCX GPS data
 def get_tcx_data(tcx_url, ActivityID):
-    headers = {
+    tcx_headers = {
         "Authorization": f"Bearer {ACCESS_TOKEN}",
         "Accept": "application/x-www-form-urlencoded"
     }
-    params = {
+    tcx_params = {
             'includePartialTCX': 'false'
         }
-    response = requests.get(tcx_url, headers=headers, params=params)
+    response = request_data_from_fitbit(tcx_url, headers=tcx_headers, params=tcx_params)
     if response.status_code != 200:
         logging.error(f"Error fetching TCX file: {response.status_code}, {response.text}")
     else:
