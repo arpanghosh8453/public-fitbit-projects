@@ -135,6 +135,25 @@ services:
     image: 'grafana/grafana:latest'
 ```
 
+## Historical Data Update
+
+#### Background
+
+The primary purpose of this script is to visualize long term data and if you have just discovered it, you may need to wait a long time to acheive this by automatic daily data fetch process. But fear not! this script was written with that fact in mind. As you may know, **fitbit rate limits the API calls to their server from their users, so only 150 API calls are allowed per hour** and it resets every hour. Some API endpoints allows fetching long term data for months and years while most **intraday data is limited to 24 hours per API call**. So this means if you need to fetch HR and steps data for 5 days, there is no other way but making 5x2=10 API calls to their servers. Now imagine this at scale, multiple measurements over the years of data. I was faced with this exact problem and it really took me a long time to figure out the most optimal way to fetch bulk historic data is to group them into categories based on their period limits and implement robust handing of `429 Error` ('too many requests within an hour' error). 
+
+This script has a feature that in the bulk update mode it will fill up the less limited data first and finally fill up the intraday data so you can see the data filling up in grafana real time as the script progresses. After it exausts it's available 150 calls for the hour, it will go to dormant mode for the remaining duration for that hour, and resume fetching the data as soon as the wait time is up automatically (so you can just leave it and let it work). To give you a timeline, **it took a little more than 24 hours to fetch all the historic data for my 2 years of historic data from their servers**. 
+
+#### Procedure
+
+The process is quite simple. you need to add an ENV variable and rerun the container in interactive mode. here is a step-by-step guide
+
+- Stop the running container and remove it with `docker compose down` if running already
+- In the docker compose file, add a new ENV variable `AUTO_DATE_RANGE=False` under the `environment` section along with other variables. This variable switches the mode to bulk update instead of regular daily update
+- Assuming you are already in the directory where the `docker-compose.yml` file is, run `docker compose run --rm fitbit-fetch-data` - this will run this container in _"remove container automatically after finish"_ mode which is useful for one time running like this. This will also attach the container to the shell as interactive mode, so don't close the shell until the bulk update is complete. 
+- After initialization, you will be requested to input the start and end dates in YYYY-MM-DD format. the format is very important so please enter the dates like this `2024-03-13`. Start date must be earlier than end date
+- You will see the update logs in the attached shell. Please wait until it shpws `Bulk Update Complete` and exits. It might take a long time depending on the given duration and 150 API call limit per hour. 
+- You are done with the bulk update at this point. Remove the ENV variable from the compose or change it to `AUTO_DATE_RANGE=True`, save the compose file and run `docker compose up` to resume daily update. 
+
 ## Deploy with Homeassistant integration
 
 User [@Jasonthefirst](https://github.com/Jasonthefirst) has developed a plugin (issue [#24](https://github.com/arpanghosh8453/public-fitbit-projects/issues/24) ) based on the python script which can be used to deploy the setup without docker. Please refer to [fitbit-ha-addon](https://gitlab.fristerspace.de/demian/fitbit-ha-addon) for the setup.
