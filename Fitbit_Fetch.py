@@ -363,6 +363,35 @@ def get_daily_data_limit_30d(start_date_str, end_date_str):
     else:
         logging.error("Recording failed : SPO2 intraday for date " + start_date_str + " to " + end_date_str)
 
+    weight_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/body/log/weight/date/' + start_date_str + '/' + end_date_str + '.json')["weight"]
+    if weight_data_list != None:
+        for entry in weight_data_list:
+            log_time = datetime.fromisoformat(entry["date"] + "T" + entry["time"])
+            utc_time = LOCAL_TIMEZONE.localize(log_time).astimezone(pytz.utc).isoformat()
+            collected_records.append({
+                "measurement":  "weight",
+                "time": utc_time,
+                "tags": {
+                    "Device": DEVICENAME
+                },
+                "fields": {
+                    "value": float(entry["weight"]),
+                }
+            })
+            collected_records.append({
+                "measurement":  "bmi",
+                "time": utc_time,
+                "tags": {
+                    "Device": DEVICENAME
+                },
+                "fields": {
+                    "value": float(entry["bmi"]),
+                }
+            })
+        logging.info("Recorded weight and BMI for date " + start_date_str + " to " + end_date_str)
+    else:
+        logging.error("Recording failed : weight and BMI for date " + start_date_str + " to " + end_date_str)
+
 # Only for sleep data - limit 100 days - 1 query
 def get_daily_data_limit_100d(start_date_str, end_date_str):
 
