@@ -64,7 +64,7 @@ You can use the Fitbit_Fetch_Autostart.service template to set up an auto-starti
 
 Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step after following OAuth setup )
 
-Initial setup : Create a folder named fitbit-fetch-data, cd into the folder, create a docker-compose.yml file with the below compose example ( Change the enviornment variables accordingly )
+Initial setup : Create a folder named fitbit-fetch-data, cd into the folder, create a compose.yml file with the below compose example ( Change the enviornment variables accordingly )
 
 Create folders named logs and tokens inside and make sure to chown them for uid 1000 ( otherwise you may get read/write permission denied errors )
 
@@ -151,7 +151,7 @@ The process is quite simple. you need to add an ENV variable and rerun the conta
 
 - In the docker compose file, add a new ENV variable `AUTO_DATE_RANGE=False` under the `environment` section along with other variables. This variable switches the mode to bulk update instead of regular daily update
 
-- Assuming you are already in the directory where the `docker-compose.yml` file is, run `docker compose run --rm fitbit-fetch-data` - this will run this container in _"remove container automatically after finish"_ mode which is useful for one time running like this. This will also attach the container to the shell as interactive mode, so don't close the shell until the bulk update is complete. 
+- Assuming you are already in the directory where the `compose.yml` file is, run `docker compose run --rm fitbit-fetch-data` - this will run this container in _"remove container automatically after finish"_ mode which is useful for one time running like this. This will also attach the container to the shell as interactive mode, so don't close the shell until the bulk update is complete. 
 
 - After initialization, you will be requested to input the start and end dates in YYYY-MM-DD format. the format is very important so please enter the dates like this `2024-03-13`. Start date must be earlier than end date. The script should work for any given range, but if you encounter an error during the bulk update with large date range, please break the date range into one year chunks (maybe a few days less than one year just to be safe), and run it for each one year chunk one after another. I personally did not encounter any issue with longer date ranges, but this is just a heads up. 
 
