@@ -574,7 +574,7 @@ def get_tcx_data(tcx_url, ActivityID):
                 
                 fields = {
                     "lat": float(lat.text),
-                    "long": float(lon.text)
+                    "lon": float(lon.text)
                 }
                 
                 # Add additional fields if they exist
