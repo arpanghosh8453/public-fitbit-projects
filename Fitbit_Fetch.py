@@ -553,8 +553,6 @@ def get_tcx_data(tcx_url, ActivityID):
     else:
         root = ET.fromstring(response.text)
         namespace = {"ns": "http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"}
-        
-        # Get all trackpoints
         trackpoints = root.findall(".//ns:Trackpoint", namespace)
         prev_time = None
         prev_distance = None
@@ -563,21 +561,16 @@ def get_tcx_data(tcx_url, ActivityID):
             time_elem = trkpt.find("ns:Time", namespace)
             lat = trkpt.find(".//ns:LatitudeDegrees", namespace)
             lon = trkpt.find(".//ns:LongitudeDegrees", namespace)
-            
-            # Extract additional data
             altitude = trkpt.find("ns:AltitudeMeters", namespace)
             distance = trkpt.find("ns:DistanceMeters", namespace)
             heart_rate = trkpt.find(".//ns:HeartRateBpm/ns:Value", namespace)
 
             if time_elem is not None and lat is not None:
                 current_time = datetime.fromisoformat(time_elem.text.strip("Z"))
-                
                 fields = {
                     "lat": float(lat.text),
                     "lon": float(lon.text)
                 }
-                
-                # Add additional fields if they exist
                 if altitude is not None:
                     fields["altitude"] = float(altitude.text)
                 if distance is not None:
@@ -587,20 +580,13 @@ def get_tcx_data(tcx_url, ActivityID):
                     current_distance = None
                 if heart_rate is not None:
                     fields["heart_rate"] = int(heart_rate.text)
-                
-                # Calculate speed if we have previous values
                 if i > 0 and prev_time is not None and prev_distance is not None and current_distance is not None:
                     time_diff = (current_time - prev_time).total_seconds()
                     distance_diff = current_distance - prev_distance
-                    
-                    if time_diff > 0:  # Avoid division by zero
-                        # Speed in meters per second
+                    if time_diff > 0:
                         speed_mps = distance_diff / time_diff
-                        # Convert to kilometers per hour
                         speed_kph = speed_mps * 3.6
                         fields["speed_kph"] = speed_kph
-                
-                # Store current values for next iteration
                 prev_time = current_time
                 prev_distance = current_distance
                 
