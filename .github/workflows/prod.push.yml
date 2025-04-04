@@ -2,9 +2,8 @@ name: Build and Push Docker Image to Docker Hub
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    branches:
+      - main
 
 env:
   REGISTRY: docker.io
