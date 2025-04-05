@@ -15,7 +15,7 @@ services:
     environment:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
       - TOKEN_FILE_PATH=/app/tokens/fitbit.token
-      - OVERWRITE_LOG_FILE=True
+      - AUTO_DATE_RANGE=True # Switch between regular update and bulk update mode
       - INFLUXDB_VERSION=1
       # Variables for influxdb 2.x ( you need to change the influxdb container config below accordingly )
       - INFLUXDB_BUCKET=your_bucket_name_here # for influxdb 2.x
@@ -34,10 +34,11 @@ services:
       - DEVICENAME=Your_Device_Name # e.g. "Charge5"
       - LOCAL_TIMEZONE=Automatic # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically). 
 
-  # We are using influxdb 1.8 in this stack
+  # We are using influxdb 1.8 in this stack (tested and optimized - better dashboard support)
   influxdb:
     restart: unless-stopped
     container_name: influxdb
+    hostname: influxdb
     environment:
       - INFLUXDB_DB=fitbit_database
       - INFLUXDB_USER=fitbit_user
@@ -50,9 +51,10 @@ services:
 
   grafana:
     restart: unless-stopped
+    container_name: grafana
+    hostname: grafana
     volumes:
         - './grafana:/var/lib/grafana'
     ports:
         - '3000:3000'
-    container_name: grafana
     image: 'grafana/grafana:latest'

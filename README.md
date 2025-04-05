@@ -30,55 +30,31 @@ A script to fetch data from Fitbit servers using their API and store the data in
 - Historical data backfilling
 - Rate limit aware data collection
 
-## How to setup the script
+## Install with Docker (Recommended)
 
-Set up influxdb 1.8 ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#influxdb) ). Create a user with a password and an empty database.
+Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. ❗ **The Fitbit `Oauth 2.0 Application Type` selection must be `personal` for intraday data access** ❗- Otherwise you might encounter `KeyError: 'activities-heart-intraday'` when fetching intraday Heart rate or steps data. `Default Access Type` should be `Read Only`. For thw Privacy Policy and TOS URLs, you can enter any valid URL links. Those won't be checked or verified as long as they are valid URLs. 
 
-Set up grafana recent release ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#grafana) )
+This will give you a `client ID`, `client secret`, and a `refresh token` (in the final step after following OAuth setup)
 
-Use the requirements.txt file to install the required packages.
+Initial setup : Create a folder named `fitbit-fetch-data`, cd into the folder, create a `compose.yml` file with the content of the given compose example ( Change the enviornment variables accordingly )
 
-Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step after following OAuth setup )
+Create two folders named `logs` and `tokens` inside and make sure to chown them for uid `1000` as the docker container runs the scripts as user uid `1000` ( otherwise you may get read/write permission denied errors )
 
-❗ **The Fitbit application must be personal type for the access of intraday data series** ❗ - Otherwise you might encounter `KeyError: 'activities-heart-intraday'` Error.
+Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data` as this will save the initial access and refresh token pair to local storage inside the mapped tokens directory, 
 
-Update the following variables in the script ( use the influxdb-v2 specific variables for influxdb-v2 instance )
+Enter the refresh token you obtained from your fitbit account and hit enter when prompted.
 
-- FITBIT_LOG_FILE_PATH = "your/expected/log/file/location/path"
-- TOKEN_FILE_PATH = "your/expected/token/file/location/path"
-- INFLUXDB_USERNAME = 'your_influxdb_username'
-- INFLUXDB_PASSWORD = 'your_influxdb_password'
-- INFLUXDB_DATABASE = 'your_influxdb_database_name'
-- client_id = "your_application_client_ID"
-- client_secret = "your_application_client_secret"
-- DEVICENAME = "Your_Device_Name" # example - "Charge5"
-- LOCAL_TIMEZONE=Automatic # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically).
-
-Run the script; it will request a refresh token as input for the first run to set up the token file. You can check the logs to see the work in progress. The script, by default, keeps running forever, calling different functions at scheduled intervals.
-
-Finally, add the influxdb database as a Data source in Grafana, and use the given Dashboard json file to replicate the dashboard quickly.
-
-You can use the Fitbit_Fetch_Autostart.service template to set up an auto-starting ( and auto-restarting in case of temporary failure ) service in Linux based system ( or WSL )
-
-## Full Stack install with Docker
-
-Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token ( end step after following OAuth setup )
-
-Initial setup : Create a folder named fitbit-fetch-data, cd into the folder, create a compose.yml file with the below compose example ( Change the enviornment variables accordingly )
-
-Create folders named logs and tokens inside and make sure to chown them for uid 1000 ( otherwise you may get read/write permission denied errors )
-
-Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data`
-
-Enter the refresh token you obtained from your fitbit account and hit enter. ❗ **The Fitbit application type must be personal for intraday data access** ❗- Otherwise you might encounter `KeyError: 'activities-heart-intraday'` Error.
-
-Then exit out with ctrl + c ( after you see the successful api requests in the stdout log )
+Then exit out with ctrl + c ( after you see the successful api requests in the stdout log ). This will automatically remove the orphan running container
 
 Finally run : `docker compose up -d` ( to launch the full stack )
 
-In some cases, for the Grafana container, you may need to chown the corresponding mounted folders as *472*:*472* if you are having read/write errors inside the grafana container.
+Now you can check out the `localhost:3000` to reach Grafana, do the initial setup, add the influxdb as a datasource (the influxdb address should be `http://influxdb:8086` as they are part of the same network stack). Test the connection to make sure the influxdb is up and rechable (you are good to go if it finds the measurements when you test the connection)
 
 To use the Grafana dashboard, please use the [JSON files](https://github.com/arpanghosh8453/public-fitbit-projects/tree/main/Grafana_Dashboard) downloaded directly from the Grafana_Dashboard of the project (there are separate versions of the dashboard for influxdb v1 and v2) or use the import code **23088** (for influxdb-v1) or **23090** (for influxdb-v2) to pull them directly from the Grafana dashboard cloud.
+
+---
+
+Example `compose.yml` file contents (tested for influxdb 1.8.x by the developer)
 
 ```
 services:
@@ -93,7 +69,7 @@ services:
     environment:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
       - TOKEN_FILE_PATH=/app/tokens/fitbit.token
-      - OVERWRITE_LOG_FILE=True
+      - AUTO_DATE_RANGE=True # Switch between regular update and bulk update mode
       - INFLUXDB_VERSION=1 # supported values are 1 and 2 
       # Variables for influxdb 2.x ( you need to change the influxdb container config below accordingly )
       - INFLUXDB_BUCKET=your_bucket_name_here # for influxdb 2.x
@@ -115,6 +91,7 @@ services:
   influxdb:
     restart: unless-stopped
     container_name: influxdb
+    hostname: influxdb
     environment:
       - INFLUXDB_DB=fitbit_database
       - INFLUXDB_USER=fitbit_user
@@ -127,11 +104,12 @@ services:
 
   grafana:
     restart: unless-stopped
+    container_name: grafana
+    hostname: grafana
     volumes:
         - './grafana:/var/lib/grafana'
     ports:
         - '3000:3000'
-    container_name: grafana
     image: 'grafana/grafana:latest'
 ```
 
@@ -139,31 +117,56 @@ services:
 
 #### Background
 
-The primary purpose of this script is to visualize long term data and if you have just discovered it, you may need to wait a long time to acheive this by automatic daily data fetch process. But fear not! this script was written with that fact in mind. As you may know, **fitbit rate limits the API calls to their server from their users, so only 150 API calls are allowed per hour** and it resets every hour. Some API endpoints allows fetching long term data for months and years while most **intraday data is limited to 24 hours per API call**. So this means if you need to fetch HR and steps data for 5 days, there is no other way but making 5x2=10 API calls to their servers. Now imagine this at scale, multiple measurements over the years of data. I was faced with this exact problem and it really took me a long time to figure out the most optimal way to fetch bulk historic data is to group them into categories based on their period limits and implement robust handing of `429 Error` ('too many requests within an hour' error). 
+The primary purpose of this script is to visualize long term data and if you have just discovered it, you may need to wait a long time to acheive this by automatic daily data fetch process. But fear not! this script was written with that fact in mind. As you may know, **fitbit rate limits the API calls to their server from their users, so only 150 API calls are allowed per hour** and it resets every hour. Some API endpoints allows fetching long term data for months and years while most **intraday data is limited to 24 hours per API call**. So this means if you need to fetch HR and steps data for 5 days, there is no other way but making 5x2=10 API calls to their servers. Now imagine this at scale, multiple measurements over the years of data. I was faced with this exact problem and it really took me a long time to figure out the most optimal way to fetch bulk historic data is to group them into categories based on their period limits and implement robust handing of `429 Error` ('too many requests within an hour' error).
 
-This script has a feature that in the bulk update mode it will fill up the less limited data first and finally fill up the intraday data so you can see the data filling up in grafana real time as the script progresses. After it exausts it's available 150 calls for the hour, it will go to dormant mode for the remaining duration for that hour, and resume fetching the data as soon as the wait time is up automatically (so you can just leave it and let it work). To give you a timeline, **it took a little more than 24 hours to fetch all the historic data for my 2 years of historic data from their servers**. 
+This script has a feature that in the bulk update mode it will fill up the less limited data first and finally fill up the intraday data so you can see the data filling up in grafana real time as the script progresses. After it exausts it's available 150 calls for the hour, it will go to dormant mode for the remaining duration for that hour, and resume fetching the data as soon as the wait time is up automatically (so you can just leave it and let it work). To give you a timeline, **it took a little more than 24 hours to fetch all the historic data for my 2 years of historic data from their servers**.
 
 #### Procedure
 
 The process is quite simple. you need to add an ENV variable and rerun the container in interactive mode. here is a step-by-step guide
 
 - Stop the running container and remove it with `docker compose down` if running already
-
 - In the docker compose file, add a new ENV variable `AUTO_DATE_RANGE=False` under the `environment` section along with other variables. This variable switches the mode to bulk update instead of regular daily update
+- Assuming you are already in the directory where the `compose.yml` file is, run `docker compose run --rm fitbit-fetch-data` - this will run this container in _"remove container automatically after finish"_ mode which is useful for one time running like this. This will also attach the container to the shell as interactive mode, so don't close the shell until the bulk update is complete.
+- After initialization, you will be requested to input the start and end dates in YYYY-MM-DD format. the format is very important so please enter the dates like this `2024-03-13`. Start date must be earlier than end date. The script should work for any given range, but if you encounter an error during the bulk update with large date range, please break the date range into one year chunks (maybe a few days less than one year just to be safe), and run it for each one year chunk one after another. I personally did not encounter any issue with longer date ranges, but this is just a heads up.
+- You will see the update logs in the attached shell. Please wait until it shpws `Bulk Update Complete` and exits. It might take a long time depending on the given duration and 150 API call limit per hour.
+- You are done with the bulk update at this point. Remove the ENV variable from the compose or change it to `AUTO_DATE_RANGE=True`, save the compose file and run `docker compose up` to resume daily update.
 
-- Assuming you are already in the directory where the `compose.yml` file is, run `docker compose run --rm fitbit-fetch-data` - this will run this container in _"remove container automatically after finish"_ mode which is useful for one time running like this. This will also attach the container to the shell as interactive mode, so don't close the shell until the bulk update is complete. 
+## Direct Install method (For developers)
 
-- After initialization, you will be requested to input the start and end dates in YYYY-MM-DD format. the format is very important so please enter the dates like this `2024-03-13`. Start date must be earlier than end date. The script should work for any given range, but if you encounter an error during the bulk update with large date range, please break the date range into one year chunks (maybe a few days less than one year just to be safe), and run it for each one year chunk one after another. I personally did not encounter any issue with longer date ranges, but this is just a heads up. 
+Set up influxdb 1.8 ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#influxdb) ). Create an user with a password and an empty database.
 
-- You will see the update logs in the attached shell. Please wait until it shpws `Bulk Update Complete` and exits. It might take a long time depending on the given duration and 150 API call limit per hour. 
+Set up grafana recent release ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#grafana) )
 
-- You are done with the bulk update at this point. Remove the ENV variable from the compose or change it to `AUTO_DATE_RANGE=True`, save the compose file and run `docker compose up` to resume daily update. 
+Use the `requirements.txt` file to install the required packages using pip
+
+Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. This will give you a client ID, client secret, and a refresh token.
+
+❗ **The Fitbit application must be personal type for the access of intraday data series** ❗ - Otherwise you might encounter `KeyError: 'activities-heart-intraday'` Error.
+
+Update the following variables in the python script ( use the influxdb-v2 specific variables for influxdb-v2 instance )
+
+- FITBIT_LOG_FILE_PATH = "your/expected/log/file/location/path"
+- TOKEN_FILE_PATH = "your/expected/token/file/location/path"
+- INFLUXDB_USERNAME = 'your_influxdb_username'
+- INFLUXDB_PASSWORD = 'your_influxdb_password'
+- INFLUXDB_DATABASE = 'your_influxdb_database_name'
+- client_id = "your_application_client_ID"
+- client_secret = "your_application_client_secret"
+- DEVICENAME = "Your_Device_Name" # example - "Charge5"
+- LOCAL_TIMEZONE=Automatic # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically).
+
+Run the script; it will request a refresh token as input for the first run to set up the token file. You can check the logs to see the work in progress. The script, by default, keeps running forever, calling different functions at scheduled intervals.
+
+Finally, add the influxdb database as a Data source in Grafana, please use the [JSON files](https://github.com/arpanghosh8453/public-fitbit-projects/tree/main/Grafana_Dashboard) from the Grafana_Dashboard to replicate the dashboard quickly.
+
+You can use the [Fitbit_Fetch_Autostart.service](https://github.com/arpanghosh8453/public-fitbit-projects/blob/main/extra/Fitbit_Fetch_Autostart.service) template to set up an auto-starting ( and auto-restarting in case of temporary failure ) service in Linux based system ( or WSL )
 
 ## Troubleshooting
 
 - If you are getting `KeyError: 'activities-heart-intraday'` please double check if your Fitbit Oauth application is set as `personal` type before you open an issue
-
-- If you are missing GPS data, but you know you have some within the selected time range in grafana, check if the variable GPS Activity variable is properly set or not. You should have a dropdown there. If you do not see any values, please go to the dashboard settings and check if the GPS variable datasource is properly set or not. 
+- If you are missing GPS data, but you know you have some within the selected time range in grafana, check if the variable GPS Activity variable is properly set or not. You should have a dropdown there. If you do not see any values, please go to the dashboard settings and check if the GPS variable datasource is properly set or not.
+- In some cases, for the Grafana container, you may need to chown the corresponding mounted folders as *472*:*472* if you are having read/write errors inside the grafana container. The logs will inform you if this happens. 
 
 ## Deploy with Homeassistant integration
 
