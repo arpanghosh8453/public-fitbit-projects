@@ -32,31 +32,25 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 ## Install with Docker (Recommended)
 
-Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. ❗ **The Fitbit `Oauth 2.0 Application Type` selection must be `personal` for intraday data access** ❗- Otherwise you might encounter `KeyError: 'activities-heart-intraday'` when fetching intraday Heart rate or steps data. `Default Access Type` should be `Read Only`. For thw Privacy Policy and TOS URLs, you can enter any valid URL links. Those won't be checked or verified as long as they are valid URLs. 
+1. Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. ❗ **The Fitbit `Oauth 2.0 Application Type` selection must be `personal` for intraday data access** ❗- Otherwise you might encounter `KeyError: 'activities-heart-intraday'` when fetching intraday Heart rate or steps data. `Default Access Type` should be `Read Only`. For thw Privacy Policy and TOS URLs, you can enter any valid URL links. Those won't be checked or verified as long as they are valid URLs. This process will give you a `client ID`, `client secret`, and a `refresh token` (in the final step after following entire OAuth setup)
 
-This will give you a `client ID`, `client secret`, and a `refresh token` (in the final step after following OAuth setup)
+2. Create a folder named `fitbit-fetch-data`, cd into the folder, create a `compose.yml` file with the content of the given compose example ( Change the enviornment variables accordingly )
 
-Initial setup : Create a folder named `fitbit-fetch-data`, cd into the folder, create a `compose.yml` file with the content of the given compose example ( Change the enviornment variables accordingly )
+3. Create two folders named `logs` and `tokens` inside and make sure to chown them for uid `1000` as the docker container runs the scripts as user uid `1000` ( otherwise you may get read/write permission denied errors )
 
-Create two folders named `logs` and `tokens` inside and make sure to chown them for uid `1000` as the docker container runs the scripts as user uid `1000` ( otherwise you may get read/write permission denied errors )
+4. Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data` as this will save the initial access and refresh token pair to local storage inside the mapped `tokens` directory. Enter the refresh token you obtained from your fitbit account and hit enter when prompted. Exit out with `ctrl + c` after you see the **successful api requests** in the stdout log. This will automatically remove the orphan running container
 
-Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data` as this will save the initial access and refresh token pair to local storage inside the mapped tokens directory, 
+5. Finally run : `docker compose up -d` ( to launch the full stack )
 
-Enter the refresh token you obtained from your fitbit account and hit enter when prompted.
+6. Now you can check out the `localhost:3000` to reach Grafana, do the initial setup, add the influxdb as a datasource (the influxdb address should be `http://influxdb:8086` as they are part of the same network stack). Test the connection to make sure the influxdb is up and rechable (you are good to go if it finds the measurements when you test the connection)
 
-Then exit out with ctrl + c ( after you see the successful api requests in the stdout log ). This will automatically remove the orphan running container
-
-Finally run : `docker compose up -d` ( to launch the full stack )
-
-Now you can check out the `localhost:3000` to reach Grafana, do the initial setup, add the influxdb as a datasource (the influxdb address should be `http://influxdb:8086` as they are part of the same network stack). Test the connection to make sure the influxdb is up and rechable (you are good to go if it finds the measurements when you test the connection)
-
-To use the Grafana dashboard, please use the [JSON files](https://github.com/arpanghosh8453/public-fitbit-projects/tree/main/Grafana_Dashboard) downloaded directly from the Grafana_Dashboard of the project (there are separate versions of the dashboard for influxdb v1 and v2) or use the import code **23088** (for influxdb-v1) or **23090** (for influxdb-v2) to pull them directly from the Grafana dashboard cloud.
+7. To use the Grafana dashboard, please use the [JSON files](https://github.com/arpanghosh8453/public-fitbit-projects/tree/main/Grafana_Dashboard) downloaded directly from the Grafana_Dashboard of the project (there are separate versions of the dashboard for influxdb v1 and v2) or use the import code **23088** (for influxdb-v1) or **23090** (for influxdb-v2) to pull them directly from the Grafana dashboard cloud.
 
 ---
 
 Example `compose.yml` file contents (tested for influxdb 1.8.x by the developer)
 
-```
+```yaml
 services:
   fitbit-fetch-data:
     restart: unless-stopped
