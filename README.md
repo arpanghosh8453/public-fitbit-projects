@@ -30,6 +30,8 @@ A script to fetch data from Fitbit servers using their API and store the data in
 - Historical data backfilling
 - Rate limit aware data collection
 
+✅ Available Influxdb database measurements and schema is available [here](extra/influxdb_schema.md)
+
 ## Install with Docker (Recommended)
 
 1. Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. ❗ **The Fitbit `Oauth 2.0 Application Type` selection must be `personal` for intraday data access** ❗- Otherwise you might encounter `KeyError: 'activities-heart-intraday'` when fetching intraday Heart rate or steps data. `Default Access Type` should be `Read Only`. For thw Privacy Policy and TOS URLs, you can enter any valid URL links. Those won't be checked or verified as long as they are valid URLs. This process will give you a `client ID`, `client secret`, and a `refresh token` (in the final step after following entire OAuth setup)
