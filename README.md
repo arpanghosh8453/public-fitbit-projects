@@ -173,3 +173,7 @@ User [@Jasonthefirst](https://github.com/Jasonthefirst) has developed a plugin (
 If you enjoy the script and love how it works with simple setup, please consider supporting me with a coffee ❤. You can view more detailed health statistics with this setup than paying a subscription fee to Fitbit, thanks to their free REST API services.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A84F3DP)
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=arpanghosh8453/public-fitbit-projects&type=Date)](https://www.star-history.com/#arpanghosh8453/public-fitbit-projects&Date)
