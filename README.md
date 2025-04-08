@@ -13,7 +13,7 @@ A script to fetch data from Fitbit servers using their API and store the data in
 ## Features
 
 - Automatic data collection from Fitbit API
-- Support for both InfluxDB 1.x and 2.x
+- Support for both InfluxDB 1.x and 2.x (limited support for 2.x)
 - Collects comprehensive health metrics including:
   - Heart Rate Data (including intraday)
   - Hourly steps Heatmap
@@ -34,23 +34,31 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 ## Install with Docker (Recommended)
 
-1. Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. ❗ **The Fitbit `Oauth 2.0 Application Type` selection must be `personal` for intraday data access** ❗- Otherwise you might encounter `KeyError: 'activities-heart-intraday'` when fetching intraday Heart rate or steps data. `Default Access Type` should be `Read Only`. For the Privacy Policy and TOS URLs, you can enter any valid URL links. Those won't be checked or verified as long as they are valid URLs. This process will give you a `client ID`, `client secret`, and a `refresh token` (in the final step after following entire OAuth setup)
+1. Follow this [guide](https://dev.fitbit.com/build/reference/web-api/developer-guide/getting-started/) to create an application. ❗ **The Fitbit `Oauth 2.0 Application Type` selection must be `personal` for intraday data access** ❗- Otherwise you might encounter `KeyError: 'activities-heart-intraday'` when fetching intraday Heart rate or steps data.
 
-2. Create a folder named `fitbit-fetch-data`, cd into the folder, create a `compose.yml` file with the content of the given compose example ( Change the enviornment variables accordingly )
+![image](https://github.com/user-attachments/assets/323884a6-8154-477b-811b-6e75b90f53f8)
 
-3. Create two folders named `logs` and `tokens` inside and make sure to chown them for uid `1000` as the docker container runs the scripts as user uid `1000` ( otherwise you may get read/write permission denied errors )
+2. `Default Access Type` should be `Read Only`. For the Privacy Policy and TOS URLs, you can enter any valid URL links. Those won't be checked or verified as long as they are valid URLs. The `Redirect URL` could be anything that does not redirect to any existing page/service (as the redirected page url will contain some tokens), I suggest using a dummy `http://localhost:8888` or `http://localhost:8000`. This process will give you a `client ID`, `client secret`, and then you must follow the Oauth 2.0 Tutorial link (marked with `2` above) to receive the required `refresh token` for the setup (see step `5`)
 
-4. Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data` as this will save the initial access and refresh token pair to local storage inside the mapped `tokens` directory. Enter the refresh token you obtained from your fitbit account and hit enter when prompted. Exit out with `ctrl + c` after you see the **successful api requests** in the stdout log. This will automatically remove the orphan running container
+3. Create a folder named `fitbit-fetch-data`, cd into the folder, create a `compose.yml` file with the content of the given compose example below ( Change the enviornment variables accordingly )
 
-5. Finally run : `docker compose up -d` ( to launch the full stack )
+4. Create two folders named `logs` and `tokens` inside and make sure to chown them for uid `1000` as the docker container runs the scripts as user uid `1000` ( otherwise you may get read/write permission denied errors )
 
-6. Now you can check out the `localhost:3000` to reach Grafana, do the initial setup, add the influxdb as a datasource (the influxdb address should be `http://influxdb:8086` as they are part of the same network stack). Test the connection to make sure the influxdb is up and rechable (you are good to go if it finds the measurements when you test the connection)
+5. Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data` as this will save the initial access and refresh token pair to local storage inside the mapped `tokens` directory. Enter the refresh token you obtained from your fitbit account and hit enter when prompted. Exit out with `ctrl + c` after you see the **successful api requests** in the stdout log. This will automatically remove the orphan running container
 
-7. To use the Grafana dashboard, please use the [JSON files](https://github.com/arpanghosh8453/public-fitbit-projects/tree/main/Grafana_Dashboard) downloaded directly from the Grafana_Dashboard of the project (there are separate versions of the dashboard for influxdb v1 and v2) or use the import code **23088** (for influxdb-v1) or **23090** (for influxdb-v2) to pull them directly from the Grafana dashboard cloud.
+6. Finally run : `docker compose up -d` ( to launch the full stack in detached mode ). Thereafter you should check the logs with `docker compose logs --follow` to see any potential error from the containers. This will help you debug the issue, if there is any (specially read/write permission issues)
+
+7. Now you can check out the `localhost:3000` to reach Grafana, do the initial setup, add the influxdb as a datasource (the influxdb address should be `http://influxdb:8086` as they are part of the same network stack). Test the connection to make sure the influxdb is up and rechable (you are good to go if it finds the measurements when you test the connection)
+
+8. To use the Grafana dashboard, please use the [JSON files](https://github.com/arpanghosh8453/public-fitbit-projects/tree/main/Grafana_Dashboard) downloaded directly from the Grafana_Dashboard of the project (there are separate versions of the dashboard for influxdb v1 and v2) or use the import code **23088** (for influxdb-v1) or **23090** (for influxdb-v2) to pull them directly from the Grafana dashboard cloud.
 
 ---
 
-Example `compose.yml` file contents (tested for influxdb 1.8.x by the developer)
+This project is tested and optimized for InfluxDB 1.8, and using the same version is strongly recommended. Using InfluxDB 2.x may result in a less detailed dashboard as it's developed by other contributers and due to its sole reliance on Flux queries, which can be problematic to use with Grafana at times. In fact, InfluxQL is being reintroduced in InfluxDB 3.0, reflecting user feedback. Grafana also has better compatibility/stability with InfluxQL from InfluxDB 1.8. 
+
+Since InfluxDB 2.x offers no clear benefits for this project, there are no plans for a full migration. While support for InfluxDB 2.x exists for this project and has been tested by others, same visual experience cannot be guaranteed on Grafana dashboard designed for influxdb 2.x.
+
+Example `compose.yml` file contents for influxdb 1.8 is given here for a quick start. If you prefer using influxdb 2.x and accept the limited Grafana dashboard, please refer to the [`compose.yml `](./compose.yml) file and update the `ENV` vriables accordingly. 
 
 ```yaml
 services:
@@ -59,29 +67,23 @@ services:
     image: thisisarpanghosh/fitbit-fetch-data:latest
     container_name: fitbit-fetch-data
     volumes:
-      - ./logs:/app/logs # logs folder should exist and owned by user id 1000
-      - ./tokens:/app/tokens # tokens folder should exist and owned by user id 1000
+      - ./logs:/app/logs
+      - ./tokens:/app/tokens
       - /etc/timezone:/etc/timezone:ro
     environment:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
       - TOKEN_FILE_PATH=/app/tokens/fitbit.token
-      - AUTO_DATE_RANGE=True # Switch between regular update and bulk update mode
-      - INFLUXDB_VERSION=1 # supported values are 1 and 2 
-      # Variables for influxdb 2.x ( you need to change the influxdb container config below accordingly )
-      - INFLUXDB_BUCKET=your_bucket_name_here # for influxdb 2.x
-      - INFLUXDB_ORG=your_org_here # for influxdb 2.x
-      - INFLUXDB_TOKEN=your_token_here # for influxdb 2.x
-      - INFLUXDB_URL=your_influxdb_server_location_with_port_here # for influxdb 2.x
-      # Variables for influxdb 1.x
-      - INFLUXDB_HOST=influxdb # for influxdb 1.x
-      - INFLUXDB_PORT=8086 # for influxdb 1.x
-      - INFLUXDB_USERNAME=fitbit_user # for influxdb 1.x
-      - INFLUXDB_PASSWORD=fitbit_password # for influxdb 1.x
-      - INFLUXDB_DATABASE=fitbit_database # for influxdb 1.x
+      - AUTO_DATE_RANGE=True # Used for bulk update, read Historical Data Update section in README
+      - INFLUXDB_VERSION=1
+      - INFLUXDB_HOST=influxdb
+      - INFLUXDB_PORT=8086
+      - INFLUXDB_USERNAME=fitbit_user
+      - INFLUXDB_PASSWORD=fitbit_password
+      - INFLUXDB_DATABASE=FitbitHealthStats
       - CLIENT_ID=your_application_client_ID # Change this to your client ID
       - CLIENT_SECRET=your_application_client_secret # Change this to your client Secret
-      - DEVICENAME=Your_Device_Name # Change this to your device name - e.g. "Charge5"
-      - LOCAL_TIMEZONE=Automatic # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically). 
+      - DEVICENAME=Your_Device_Name # Change this to your device name - e.g. "Charge5" without quotes
+      - LOCAL_TIMEZONE=Automatic
 
 
   influxdb:
@@ -89,7 +91,7 @@ services:
     container_name: influxdb
     hostname: influxdb
     environment:
-      - INFLUXDB_DB=fitbit_database
+      - INFLUXDB_DB=FitbitHealthStats
       - INFLUXDB_USER=fitbit_user
       - INFLUXDB_USER_PASSWORD=fitbit_password
     ports:
@@ -108,6 +110,8 @@ services:
         - '3000:3000'
     image: 'grafana/grafana:latest'
 ```
+
+✅ The Above compose file creates an open read/write access influxdb database with no authentication. Unless you expose this database to the open internet directly, this poses no threat. You may enable authentication and grant appropriate read/write access to the `fitbit_user` on the `FitbitHealthStats` database manually if you want with `INFLUXDB_ADMIN_ENABLED`, `INFLUXDB_ADMIN_USER`, and `INFLUXDB_ADMIN_PASSWORD` ENV variables, following the [influxdb guide](https://github.com/docker-library/docs/blob/master/influxdb/README.md) but this won't be covered here for the sake of simplicity. 
 
 ## Historical Data Update
 

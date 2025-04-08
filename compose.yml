@@ -1,9 +1,9 @@
-services:
-# Initial setup. Run the following command first and enter a valie fitbit refresh token
+# Initial setup: Run the command `docker compose run --rm fitbit-fetch-data` and enter a valie fitbit refresh token
 # make sure the mapped logs and tokens folders exists and owned by 1000 uid, otherwise you may get permission denied error. 
-# docker compose run --rm fitbit-fetch-data
-# Then exit out with ctrl + c
+# Check for successful API calls and then exit out with ctrl + c
 # Then run docker compose up -d to launch the full stack
+# This compose file creates an open read/write access influxdb database with no authentication. You may enable authentication and grant appropriate read/write access to the `fitbit_user` on the `FitbitHealthStats` database manually if you want with additional `INFLUXDB_ADMIN_ENABLED`, `INFLUXDB_ADMIN_USER`, and `INFLUXDB_ADMIN_PASSWORD` ENV variables following influxdb 1.8 guidelines. 
+services:
   fitbit-fetch-data:
     restart: unless-stopped
     image: thisisarpanghosh/fitbit-fetch-data:latest
@@ -15,9 +15,9 @@ services:
     environment:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
       - TOKEN_FILE_PATH=/app/tokens/fitbit.token
-      - AUTO_DATE_RANGE=True # Switch between regular update and bulk update mode
+      - AUTO_DATE_RANGE=True # Switch between regular update and bulk update mode, read Historical Data Update section in README
       - INFLUXDB_VERSION=1
-      # Variables for influxdb 2.x ( you need to change the influxdb container config below accordingly )
+      # Variables for influxdb 2.x ( additionally you need to change the influxdb container image to 2.x below )
       - INFLUXDB_BUCKET=your_bucket_name_here # for influxdb 2.x
       - INFLUXDB_ORG=your_org_here # for influxdb 2.x
       - INFLUXDB_TOKEN=your_token_here # for influxdb 2.x
