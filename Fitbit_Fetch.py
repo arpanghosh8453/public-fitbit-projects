@@ -100,6 +100,7 @@ def request_data_from_fitbit(url, headers={}, params={}, data={}, request_type="
                 print("Error code : " + str(response.status_code) + ", Details : " + response.text)
                 ACCESS_TOKEN = Get_New_Access_Token(client_id, client_secret)
                 logging.info("New Access Token : " + ACCESS_TOKEN)
+                headers["Authorization"] = f"Bearer {ACCESS_TOKEN}" # Update the renewed ACCESS_TOKEN to the headers dict
                 time.sleep(30)
                 if retry_attempts > EXPIRED_TOKEN_MAX_RETRY:
                     logging.error("Unable to solve the 401 Error. Please debug - " + response.text)
