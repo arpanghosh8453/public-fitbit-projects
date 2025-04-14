@@ -166,7 +166,11 @@ You can use the [Fitbit_Fetch_Autostart.service](https://github.com/arpanghosh84
 
 - If you are getting `KeyError: 'activities-heart-intraday'` please double check if your Fitbit Oauth application is set as `personal` type before you open an issue
 - If you are missing GPS data, but you know you have some within the selected time range in grafana, check if the variable GPS Activity variable is properly set or not. You should have a dropdown there. If you do not see any values, please go to the dashboard settings and check if the GPS variable datasource is properly set or not.
-- In some cases, for the Grafana container, you may need to chown the corresponding mounted folders as *472*:*472* if you are having read/write errors inside the grafana container. The logs will inform you if this happens. 
+- In some cases, for the Grafana container, you may need to chown the corresponding mounted folders as *472*:*472* if you are having read/write errors inside the grafana container. The logs will inform you if this happens.
+
+## Own a Garmin Device?
+
+If you are a **Garmin user**, please check out the [sister project](https://github.com/arpanghosh8453/garmin-grafana) made for Garmin
 
 ## Deploy with Homeassistant integration
 
