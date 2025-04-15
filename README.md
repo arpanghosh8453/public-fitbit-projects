@@ -52,7 +52,7 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 8. To use the Grafana dashboard, please use the [JSON files](https://github.com/arpanghosh8453/public-fitbit-projects/tree/main/Grafana_Dashboard) downloaded directly from the Grafana_Dashboard of the project (there are separate versions of the dashboard for influxdb v1 and v2) or use the import code **23088** (for influxdb-v1) or **23090** (for influxdb-v2) to pull them directly from the Grafana dashboard cloud.
 
-9. 9. In the Grafana dashboard, the heatmap panels require an additional plugin you must install. This can be done very easily with docker commands. Just run `docker exec -it grafana grafana cli plugins install marcusolsson-hourly-heatmap-panel` and then run `docker restart grafana` to apply that plugin update. Now, you should be able to see the Heatmap panels on the dashboard loading successfully.
+9. In the Grafana dashboard, the heatmap panels require an additional plugin you must install. This can be done very easily with docker commands. Just run `docker exec -it grafana grafana cli plugins install marcusolsson-hourly-heatmap-panel` and then run `docker restart grafana` to apply that plugin update. Now, you should be able to see the Heatmap panels on the dashboard loading successfully.
 
 ---
 
