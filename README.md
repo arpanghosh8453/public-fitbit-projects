@@ -54,11 +54,11 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 ---
 
-This project is tested and optimized for InfluxDB 1.8, and using the same version is strongly recommended. Using InfluxDB 2.x may result in a less detailed dashboard as it's developed by other contributers and due to its sole reliance on Flux queries, which can be problematic to use with Grafana at times. In fact, InfluxQL is being reintroduced in InfluxDB 3.0, reflecting user feedback. Grafana also has better compatibility/stability with InfluxQL from InfluxDB 1.8. 
+This project is tested and optimized for InfluxDB 1.11, and using the same version is strongly recommended. Using InfluxDB 2.x may result in a less detailed dashboard as it's developed by other contributers and due to its sole reliance on Flux queries, which can be problematic to use with Grafana at times. In fact, InfluxQL is being reintroduced in InfluxDB 3.0, reflecting user feedback. Grafana also has better compatibility/stability with InfluxQL from InfluxDB 1.11. 
 
 Since InfluxDB 2.x offers no clear benefits for this project, there are no plans for a full migration. While support for InfluxDB 2.x exists for this project and has been tested by others, same visual experience cannot be guaranteed on Grafana dashboard designed for influxdb 2.x.
 
-Example `compose.yml` file contents for influxdb 1.8 is given here for a quick start. If you prefer using influxdb 2.x and accept the limited Grafana dashboard, please refer to the [`compose.yml `](./compose.yml) file and update the `ENV` vriables accordingly. 
+Example `compose.yml` file contents for influxdb 1.11 is given here for a quick start. If you prefer using influxdb 2.x and accept the limited Grafana dashboard, please refer to the [`compose.yml `](./compose.yml) file and update the `ENV` vriables accordingly. 
 
 ```yaml
 services:
@@ -94,11 +94,12 @@ services:
       - INFLUXDB_DB=FitbitHealthStats
       - INFLUXDB_USER=fitbit_user
       - INFLUXDB_USER_PASSWORD=fitbit_password
+      - INFLUXDB_DATA_INDEX_VERSION=tsi1
     ports:
         - '8086:8086'
     volumes:
         - './influxdb:/var/lib/influxdb'
-    image: 'influxdb:1.8'
+    image: 'influxdb:1.11'
 
   grafana:
     restart: unless-stopped
@@ -165,8 +166,12 @@ You can use the [Fitbit_Fetch_Autostart.service](https://github.com/arpanghosh84
 ## Troubleshooting
 
 - If you are getting `KeyError: 'activities-heart-intraday'` please double check if your Fitbit Oauth application is set as `personal` type before you open an issue
+
 - If you are missing GPS data, but you know you have some within the selected time range in grafana, check if the variable GPS Activity variable is properly set or not. You should have a dropdown there. If you do not see any values, please go to the dashboard settings and check if the GPS variable datasource is properly set or not.
-- In some cases, for the Grafana container, you may need to chown the corresponding mounted folders as *472*:*472* if you are having read/write errors inside the grafana container. The logs will inform you if this happens.
+
+- In some cases, for the `grafana` container, you may need to chown the corresponding mounted folders as *472*:*472* if you are having read/write errors inside the grafana container. The logs will inform you if this happens. The `influxdb:1.11` container requires the folder to be owned by `1500:1500`
+
+
 
 ## Own a Garmin Device?
 
