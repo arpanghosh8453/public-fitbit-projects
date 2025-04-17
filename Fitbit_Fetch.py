@@ -305,7 +305,7 @@ def get_daily_data_limit_30d(start_date_str, end_date_str):
     else:
         logging.error("Recording failed HRV for date " + start_date_str + " to " + end_date_str)
 
-    br_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/br/date/' + start_date_str + '/' + end_date_str + '.json')["br"]
+    br_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/br/date/' + start_date_str + '/' + end_date_str + '.json').get("br")
     if br_data_list != None:
         for data in br_data_list:
             log_time = datetime.fromisoformat(data["dateTime"] + "T" + "00:00:00")
@@ -322,7 +322,7 @@ def get_daily_data_limit_30d(start_date_str, end_date_str):
                 })
         logging.info("Recorded BR for date " + start_date_str + " to " + end_date_str)
     else:
-        logging.error("Recording failed : BR for date " + start_date_str + " to " + end_date_str)
+        logging.warning("Records not found : BR for date " + start_date_str + " to " + end_date_str)
 
     skin_temp_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/temp/skin/date/' + start_date_str + '/' + end_date_str + '.json')["tempSkin"]
     if skin_temp_data_list != None:
