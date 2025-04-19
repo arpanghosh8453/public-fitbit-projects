@@ -285,7 +285,7 @@ def get_intraday_data_limit_1d(date_str, measurement_list):
 # Max range is 30 days, records BR, SPO2 Intraday, skin temp and HRV - 4 queries
 def get_daily_data_limit_30d(start_date_str, end_date_str):
 
-    hrv_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/hrv/date/' + start_date_str + '/' + end_date_str + '.json')['hrv']
+    hrv_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/hrv/date/' + start_date_str + '/' + end_date_str + '.json').get('hrv')
     if hrv_data_list != None:
         for data in hrv_data_list:
             log_time = datetime.fromisoformat(data["dateTime"] + "T" + "00:00:00")
@@ -324,7 +324,7 @@ def get_daily_data_limit_30d(start_date_str, end_date_str):
     else:
         logging.warning("Records not found : BR for date " + start_date_str + " to " + end_date_str)
 
-    skin_temp_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/temp/skin/date/' + start_date_str + '/' + end_date_str + '.json')["tempSkin"]
+    skin_temp_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/temp/skin/date/' + start_date_str + '/' + end_date_str + '.json').get("tempSkin")
     if skin_temp_data_list != None:
         for temp_record in skin_temp_data_list:
             log_time = datetime.fromisoformat(temp_record["dateTime"] + "T" + "00:00:00")
@@ -364,7 +364,7 @@ def get_daily_data_limit_30d(start_date_str, end_date_str):
     else:
         logging.error("Recording failed : SPO2 intraday for date " + start_date_str + " to " + end_date_str)
 
-    weight_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/body/log/weight/date/' + start_date_str + '/' + end_date_str + '.json')["weight"]
+    weight_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/body/log/weight/date/' + start_date_str + '/' + end_date_str + '.json').get("weight")
     if weight_data_list != None:
         for entry in weight_data_list:
             log_time = datetime.fromisoformat(entry["date"] + "T" + entry["time"])
@@ -396,7 +396,7 @@ def get_daily_data_limit_30d(start_date_str, end_date_str):
 # Only for sleep data - limit 100 days - 1 query
 def get_daily_data_limit_100d(start_date_str, end_date_str):
 
-    sleep_data = request_data_from_fitbit('https://api.fitbit.com/1.2/user/-/sleep/date/' + start_date_str + '/' + end_date_str + '.json')["sleep"]
+    sleep_data = request_data_from_fitbit('https://api.fitbit.com/1.2/user/-/sleep/date/' + start_date_str + '/' + end_date_str + '.json').get("sleep")
     if sleep_data != None:
         for record in sleep_data:
             log_time = datetime.fromisoformat(record["startTime"])
@@ -468,7 +468,7 @@ def get_daily_data_limit_100d(start_date_str, end_date_str):
 def get_daily_data_limit_365d(start_date_str, end_date_str):
     activity_minutes_list = ["minutesSedentary", "minutesLightlyActive", "minutesFairlyActive", "minutesVeryActive"]
     for activity_type in activity_minutes_list:
-        activity_minutes_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/tracker/' + activity_type + '/date/' + start_date_str + '/' + end_date_str + '.json')["activities-tracker-"+activity_type]
+        activity_minutes_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/tracker/' + activity_type + '/date/' + start_date_str + '/' + end_date_str + '.json').get("activities-tracker-"+activity_type)
         if activity_minutes_data_list != None:
             for data in activity_minutes_data_list:
                 log_time = datetime.fromisoformat(data["dateTime"] + "T" + "00:00:00")
@@ -490,7 +490,7 @@ def get_daily_data_limit_365d(start_date_str, end_date_str):
 
     activity_others_list = ["distance", "calories", "steps"]
     for activity_type in activity_others_list:
-        activity_others_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/tracker/' + activity_type + '/date/' + start_date_str + '/' + end_date_str + '.json')["activities-tracker-"+activity_type]
+        activity_others_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/tracker/' + activity_type + '/date/' + start_date_str + '/' + end_date_str + '.json').get("activities-tracker-"+activity_type)
         if activity_others_data_list != None:
             for data in activity_others_data_list:
                 log_time = datetime.fromisoformat(data["dateTime"] + "T" + "00:00:00")
@@ -511,7 +511,7 @@ def get_daily_data_limit_365d(start_date_str, end_date_str):
             logging.error("Recording failed : " + activity_name + " for date " + start_date_str + " to " + end_date_str)
         
 
-    HR_zones_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/heart/date/' + start_date_str + '/' + end_date_str + '.json')["activities-heart"]
+    HR_zones_data_list = request_data_from_fitbit('https://api.fitbit.com/1/user/-/activities/heart/date/' + start_date_str + '/' + end_date_str + '.json').get("activities-heart")
     if HR_zones_data_list != None:
         for data in HR_zones_data_list:
             log_time = datetime.fromisoformat(data["dateTime"] + "T" + "00:00:00")
