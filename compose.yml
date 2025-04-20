@@ -45,17 +45,21 @@ services:
       - INFLUXDB_USER_PASSWORD=fitbit_password
       - INFLUXDB_DATA_INDEX_VERSION=tsi1
     ports:
-        - '8086:8086'
+      - '8086:8086'
     volumes:
-        - './influxdb:/var/lib/influxdb'
+      - './influxdb:/var/lib/influxdb'
     image: 'influxdb:1.11'
 
   grafana:
     restart: unless-stopped
     container_name: grafana
     hostname: grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_PLUGINS_PREINSTALL=marcusolsson-hourly-heatmap-panel
     volumes:
-        - './grafana:/var/lib/grafana'
+      - './grafana:/var/lib/grafana'
     ports:
-        - '3000:3000'
+      - '3000:3000'
     image: 'grafana/grafana:latest'
