@@ -135,6 +135,26 @@ The process is quite simple. you need to add an ENV variable and rerun the conta
 - You will see the update logs in the attached shell. Please wait until it shpws `Bulk Update Complete` and exits. It might take a long time depending on the given duration and 150 API call limit per hour.
 - You are done with the bulk update at this point. Remove the ENV variable from the compose or change it to `AUTO_DATE_RANGE=True`, save the compose file and run `docker compose up` to resume daily update.
 
+## Backup Database
+
+Whether you are using a bind mount or a docker volume, creating a restorable archival backup of your valuable health data is always advised. Assuming you named your database as `FitbitHealthStats` and influxdb container name is `influxdb`, you can use the following script to create a static archival backup of your data present in the influxdb database at that time point. This restore points can be used to re-create the influxdb database with the archived data without requesting them from Garmin's servers again, which is not only time consuming but also resource intensive. 
+
+```bash
+#!/bin/bash
+TIMESTAMP=$(date +%F_%H-%M)
+BACKUP_DIR="./influxdb_backups/$TIMESTAMP"
+mkdir -p "$BACKUP_DIR"
+docker exec influxdb influxd backup -portable -db FitbitHealthStats /tmp/influxdb_backup
+docker cp influxdb:/tmp/influxdb_backup "$BACKUP_DIR"
+docker exec influxdb rm -r /tmp/influxdb_backup"
+```
+
+The above bash script would create a folder named `influxdb_backups` inside your current working directory and create a subfolder under it with current date-time. Then it will create the backup for `FitbitHealthStats` database and copy the backup files to that location. 
+
+For restoring the data from a backup, you first need to make the files available inside the new influxdb docker container. You can use `docker cp` or volume bind mount for this. Once the backup data is available to the container internally, you can simply run `docker exec influxdb influxd restore -portable -db FitbitHealthStats /path/to/internal-backup-directory` to restore the backup.
+
+Please read detailed guide on this from the [influxDB documentation for backup and restore](https://docs.influxdata.com/influxdb/v1/administration/backup_and_restore/)
+
 ## Direct Install method (For developers)
 
 Set up influxdb 1.8 ( direct install or via [docker](https://github.com/arpanghosh8453/public-docker-config#influxdb) ). Create an user with a password and an empty database.
@@ -172,7 +192,6 @@ You can use the [Fitbit_Fetch_Autostart.service](https://github.com/arpanghosh84
 - If you are missing GPS data, but you know you have some within the selected time range in grafana, check if the variable GPS Activity variable is properly set or not. You should have a dropdown there. If you do not see any values, please go to the dashboard settings and check if the GPS variable datasource is properly set or not.
 
 - In some cases, for the `grafana` container, you may need to chown the corresponding mounted folders as *472*:*472* if you are having read/write errors inside the grafana container. The logs will inform you if this happens. The `influxdb:1.11` container requires the folder to be owned by `1500:1500`
-
 
 
 ## Own a Garmin Device?
