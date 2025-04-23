@@ -110,7 +110,7 @@ services:
     ports:
       - '8086:8086' # Influxdb V3 should map as "8181:8181" (Change INFLUXDB_PORT to 8181 on fitbit-fetch-data appropriately for InfluxDB V3)
     volumes:
-      - influxdb_data:/var/lib/influxdb # InfluxDB V3 bind mount should be set like - influxdb_data:/data if you set INFLUXDB3_DB_DIR=/data (instead of /var/lib/influxdb)
+      - ./influxdb:/var/lib/influxdb # InfluxDB V3 bind mount should be set like - ./influxdb:/data if you set INFLUXDB3_DB_DIR=/data (instead of /var/lib/influxdb)
     image: 'influxdb:1.11' # You must change this to 'quay.io/influxdb/influxdb3-core:latest' for influxdb V3
 
   grafana:
