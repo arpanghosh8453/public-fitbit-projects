@@ -62,6 +62,8 @@ Since InfluxDB 2.x offers no clear benefits for this project, there are no plans
 
 Example `compose.yml` file contents for influxdb 1.11 is given here for a quick start. If you prefer using influxdb 2.x and accept the limited Grafana dashboard, please refer to the [`compose.yml `](./compose.yml) file and update the `ENV` vriables accordingly. 
 
+Support of current [Influxdb 3](https://docs.influxdata.com/influxdb3/core/) OSS is also available with this project [ `Exprimental` ]
+
 ```yaml
 services:
   fitbit-fetch-data:
@@ -93,15 +95,23 @@ services:
     container_name: influxdb
     hostname: influxdb
     environment:
-      - INFLUXDB_DB=FitbitHealthStats
-      - INFLUXDB_USER=fitbit_user
-      - INFLUXDB_USER_PASSWORD=fitbit_password
+      - INFLUXDB_DB=GarminStats
+      - INFLUXDB_USER=influxdb_user
+      - INFLUXDB_USER_PASSWORD=influxdb_secret_password
       - INFLUXDB_DATA_INDEX_VERSION=tsi1
+      ###############################################################################
+      # The following ENV variables are applicable for InfluxDB V3 - No effect for V1
+      ###############################################################################
+      - INFLUXDB3_MAX_HTTP_REQUEST_SIZE=10485760
+      - INFLUXDB3_NODE_IDENTIFIER_PREFIX=Influxdb-node1
+      - INFLUXDB3_BUCKET=GarminStats
+      - INFLUXDB3_OBJECT_STORE=file
+      - INFLUXDB3_DB_DIR=/data
     ports:
-      - '8086:8086'
+      - '8086:8086' # Influxdb V3 should map as "8181:8181" (Change INFLUXDB_PORT to 8181 on fitbit-fetch-data appropriately for InfluxDB V3)
     volumes:
-      - './influxdb:/var/lib/influxdb'
-    image: 'influxdb:1.11'
+      - influxdb_data:/var/lib/influxdb # InfluxDB V3 bind mount should be set like - influxdb_data:/data if you set INFLUXDB3_DB_DIR=/data (instead of /var/lib/influxdb)
+    image: 'influxdb:1.11' # You must change this to 'quay.io/influxdb/influxdb3-core:latest' for influxdb V3
 
   grafana:
     restart: unless-stopped
