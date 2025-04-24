@@ -44,6 +44,8 @@ A script to fetch data from Fitbit servers using their API and store the data in
 
 4. Create two folders named `logs` and `tokens` inside and make sure to chown them for uid `1000` as the docker container runs the scripts as user uid `1000` ( otherwise you may get read/write permission denied errors )
 
+Note: If you are planning to use Influxdb V3, you need to enter the admin access token in `INFLUXDB_V3_ACCESS_TOKEN`. To generate the admin token you should run `docker exec influxdb influxdb3 create token --admin` command. This will give you the admin token which you must update to `INFLUXDB_V3_ACCESS_TOKEN` ENV variable. You can do this only once and the token can't be viewed or retrieved ever again (influxdb only stores a hash of it in the database for comparison). So please store this token carefully.
+
 5. Initial set up of Access and Refresh tokens with the command : `docker pull thisisarpanghosh/fitbit-fetch-data:latest && docker compose run --rm fitbit-fetch-data` as this will save the initial access and refresh token pair to local storage inside the mapped `tokens` directory. Enter the refresh token you obtained from your fitbit account and hit enter when prompted. Exit out with `ctrl + c` after you see the **successful api requests** in the stdout log. This will automatically remove the orphan running container
 
 6. Finally run : `docker compose up -d` ( to launch the full stack in detached mode ). Thereafter you should check the logs with `docker compose logs --follow` to see any potential error from the containers. This will help you debug the issue, if there is any (specially read/write permission issues)

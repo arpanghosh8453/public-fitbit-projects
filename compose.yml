@@ -20,7 +20,7 @@ services:
       - INFLUXDB_HOST=influxdb # for influxdb 1.x and 3.x
       - INFLUXDB_PORT=8086 # for influxdb 1.x and 3.x
       # Variables for influxdb 3.x ( additionally you need to change the influxdb container image to 3.x below )
-      - INFLUXDB_V3_ACCESS_TOKEN=your_influxdb_admin_access_token # Required for influxdb V3 (ignored for V1 and V2), Set this to your admin access token (or a token that has database R/W access)
+      - INFLUXDB_V3_ACCESS_TOKEN=your_influxdb_admin_access_token # Required for influxdb V3 (ignored for V1 and V2), Set this to your admin access token (or a token that has database R/W access) - Check README installation notes under point 3 to generate this. 
       # Variables for influxdb 2.x ( additionally you need to change the influxdb container image to 2.x below )
       - INFLUXDB_BUCKET=your_bucket_name_here # for influxdb 2.x
       - INFLUXDB_ORG=your_org_here # for influxdb 2.x
