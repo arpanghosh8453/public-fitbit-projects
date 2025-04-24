@@ -66,6 +66,9 @@ Example `compose.yml` file contents for influxdb 1.11 is given here for a quick 
 
 Support of current [Influxdb 3](https://docs.influxdata.com/influxdb3/core/) OSS is also available with this project [ `Exprimental` ]
 
+> [!IMPORTANT]
+> Please note that InfluxDB 3.x OSS limits the query time limit to 72 hours. This can be extended more by setting `INFLUXDB3_QUERY_FILE_LIMIT` to a very high value with a potential risk of crashing the container (OOM Error). As we are interested in visualization long term data trends, this limit defeats the purpose. Hence, we strongly recommend using InfluxDB 1.11.x (default settings) to our users as long as it's not discontinued from production. 
+
 ```yaml
 services:
   fitbit-fetch-data:
@@ -104,11 +107,12 @@ services:
       ###############################################################################
       # The following ENV variables are applicable for InfluxDB V3 - No effect for V1
       ###############################################################################
-      - INFLUXDB3_MAX_HTTP_REQUEST_SIZE=10485760
-      - INFLUXDB3_NODE_IDENTIFIER_PREFIX=Influxdb-node1
-      - INFLUXDB3_BUCKET=GarminStats
-      - INFLUXDB3_OBJECT_STORE=file
-      - INFLUXDB3_DB_DIR=/data
+      # - INFLUXDB3_MAX_HTTP_REQUEST_SIZE=10485760
+      # - INFLUXDB3_NODE_IDENTIFIER_PREFIX=Influxdb-node1
+      # - INFLUXDB3_BUCKET=GarminStats
+      # - INFLUXDB3_OBJECT_STORE=file
+      # - INFLUXDB3_DB_DIR=/data
+      # - INFLUXDB3_QUERY_FILE_LIMIT=5000 # this set to be a very high value if you want to view long term data
     ports:
       - '8086:8086' # Influxdb V3 should map as "8181:8181" (Change INFLUXDB_PORT to 8181 on fitbit-fetch-data appropriately for InfluxDB V3)
     volumes:
