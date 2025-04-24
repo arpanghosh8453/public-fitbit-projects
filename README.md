@@ -93,6 +93,8 @@ services:
       - CLIENT_SECRET=your_application_client_secret # Change this to your client Secret
       - DEVICENAME=Your_Device_Name # Change this to your device name - e.g. "Charge5" without quotes
       - LOCAL_TIMEZONE=Automatic
+    depends_on:
+      - influxdb
 
 
   influxdb:
