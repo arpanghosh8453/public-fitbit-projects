@@ -35,6 +35,8 @@ services:
       - CLIENT_SECRET=your_application_client_secret # Change this to your client Secret
       - DEVICENAME=Your_Device_Name # e.g. "Charge5"
       - LOCAL_TIMEZONE=Automatic # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically). 
+    depends_on:
+      - influxdb             
 
   # We are using influxdb 1.8 in this stack (tested and optimized - better dashboard support)
   influxdb:
