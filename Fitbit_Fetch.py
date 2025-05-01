@@ -41,7 +41,9 @@ client_id = os.environ.get("CLIENT_ID") or "your_application_client_ID" # Change
 client_secret = os.environ.get("CLIENT_SECRET") or "your_application_client_secret" # Change this to your client Secret
 DEVICENAME = os.environ.get("DEVICENAME") or "Your_Device_Name" # e.g. "Charge5"
 ACCESS_TOKEN = "" # Empty Global variable initialization, will be replaced with a functional access code later using the refresh code
-AUTO_DATE_RANGE = False if os.environ.get("AUTO_DATE_RANGE") in ['False','false','FALSE','f','F','no','No','NO','0'] else True # Automatically selects date range from todays date and update_date_range variable
+MANUAL_START_DATE = os.getenv("MANUAL_START_DATE", None) # optional, in YYYY-MM-DD format, if you want to bulk update only from specific date
+MANUAL_END_DATE = os.getenv("MANUAL_END_DATE", datetime.today().strftime('%Y-%m-%d')) # optional, in YYYY-MM-DD format, if you want to bulk update until a specific date
+AUTO_DATE_RANGE = False if os.environ.get("AUTO_DATE_RANGE") in ['False','false','FALSE','f','F','no','No','NO','0'] else (not bool(MANUAL_START_DATE)) # Automatically selects date range from todays date and update_date_range variable
 auto_update_date_range = 1 # Days to go back from today for AUTO_DATE_RANGE *** DO NOT go above 2 - otherwise may break rate limit ***
 LOCAL_TIMEZONE = os.environ.get("LOCAL_TIMEZONE") or "Automatic" # set to "Automatic" for Automatic setup from User profile (if not mentioned here specifically).
 SCHEDULE_AUTO_UPDATE = True if AUTO_DATE_RANGE else False # Scheduling updates of data when script runs
@@ -257,8 +259,8 @@ if AUTO_DATE_RANGE:
     end_date_str = end_date.strftime("%Y-%m-%d")
     start_date_str = start_date.strftime("%Y-%m-%d")
 else:
-    start_date_str = input("Enter start date in YYYY-MM-DD format : ")
-    end_date_str = input("Enter end date in YYYY-MM-DD format : ")
+    start_date_str = MANUAL_START_DATE or input("Enter start date in YYYY-MM-DD format : ")
+    end_date_str = MANUAL_END_DATE or input("Enter end date in YYYY-MM-DD format : ")
     start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
     end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
 
