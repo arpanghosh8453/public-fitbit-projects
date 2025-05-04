@@ -29,7 +29,7 @@ services:
       # Variables for influxdb 1.x
       - INFLUXDB_USERNAME=fitbit_user # for influxdb 1.x
       - INFLUXDB_PASSWORD=fitbit_password # for influxdb 1.x
-      - INFLUXDB_DATABASE=fitbit_database # for influxdb 1.x
+      - INFLUXDB_DATABASE=FitbitHealthStats # for influxdb 1.x
       # MAKE SURE you set the application type to PERSONAL. Otherwise, you won't have access to intraday data series, resulting in 40X errors.
       - CLIENT_ID=your_application_client_ID # Change this to your client ID
       - CLIENT_SECRET=your_application_client_secret # Change this to your client Secret
@@ -44,9 +44,9 @@ services:
     container_name: influxdb
     hostname: influxdb
     environment:
-      - INFLUXDB_DB=GarminStats
-      - INFLUXDB_USER=influxdb_user
-      - INFLUXDB_USER_PASSWORD=influxdb_secret_password
+      - INFLUXDB_DB=FitbitHealthStats
+      - INFLUXDB_USER=fitbit_user
+      - INFLUXDB_USER_PASSWORD=fitbit_password
       - INFLUXDB_DATA_INDEX_VERSION=tsi1
       ###############################################################################
       # The following ENV variables are applicable for InfluxDB V3 - No effect for V1

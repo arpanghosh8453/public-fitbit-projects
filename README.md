@@ -50,7 +50,7 @@ Note: If you are planning to use Influxdb V3, you need to enter the admin access
 
 6. Finally run : `docker compose up -d` ( to launch the full stack in detached mode ). Thereafter you should check the logs with `docker compose logs --follow` to see any potential error from the containers. This will help you debug the issue, if there is any (specially read/write permission issues)
 
-7. Now you can check out the `localhost:3000` to reach Grafana, do the initial setup, add the influxdb as a datasource (the influxdb address should be `http://influxdb:8086` as they are part of the same network stack). Test the connection to make sure the influxdb is up and rechable (you are good to go if it finds the measurements when you test the connection)
+7. Now you can check out the `localhost:3000` to reach Grafana, do the initial setup, add the influxdb as a datasource (the influxdb address should be `http://influxdb:8086` as they are part of the same network stack, and username should be `fitbit_user` with the password `fitbit_password` for the database name `FitbitHealthStats` if you are using the default settings from the compose file.). Test the connection to make sure the influxdb is up and rechable (you are good to go if it finds the measurements when you test the connection)
 
 8. To use the Grafana dashboard, please use the [JSON files](https://github.com/arpanghosh8453/public-fitbit-projects/tree/main/Grafana_Dashboard) downloaded directly from the Grafana_Dashboard of the project (there are separate versions of the dashboard for influxdb v1 and v2) or use the import code **23088** (for influxdb-v1) or **23090** (for influxdb-v2) to pull them directly from the Grafana dashboard cloud.
 
@@ -102,9 +102,9 @@ services:
     container_name: influxdb
     hostname: influxdb
     environment:
-      - INFLUXDB_DB=GarminStats
-      - INFLUXDB_USER=influxdb_user
-      - INFLUXDB_USER_PASSWORD=influxdb_secret_password
+      - INFLUXDB_DB=FitbitHealthStats
+      - INFLUXDB_USER=fitbit_user
+      - INFLUXDB_USER_PASSWORD=fitbit_password
       - INFLUXDB_DATA_INDEX_VERSION=tsi1
       ###############################################################################
       # The following ENV variables are applicable for InfluxDB V3 - No effect for V1
