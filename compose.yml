@@ -9,8 +9,8 @@ services:
     image: thisisarpanghosh/fitbit-fetch-data:latest
     container_name: fitbit-fetch-data
     volumes:
-      - ./logs:/app/logs # logs folder should exist and owned by user id 1000
-      - ./tokens:/app/tokens # tokens folder should esist and owned by user id 1000
+      - ./logs:/app/logs # logs folder should exist and owned by user id 1500 for influxdb v1.11
+      - ./tokens:/app/tokens # tokens folder should esist and owned by user id 1500 for influxdb v1.11
       - /etc/timezone:/etc/timezone:ro
     environment:
       - FITBIT_LOG_FILE_PATH=/app/logs/fitbit.log
@@ -60,7 +60,7 @@ services:
     ports:
       - '8086:8086' # Influxdb V3 should map as "8181:8181" (Change INFLUXDB_PORT to 8181 on garmin-fetch-data appropriately for InfluxDB V3)
     volumes:
-      - ./influxdb:/var/lib/influxdb # InfluxDB V3 bind mount should be set like - ./influxdb:/data if you set INFLUXDB3_DB_DIR=/data (instead of /var/lib/influxdb)
+      - ./influxdb:/var/lib/influxdb # InfluxDB V3 bind mount should be set like - ./influxdb:/data if you set INFLUXDB3_DB_DIR=/data (instead of /var/lib/influxdb) - must be owned by 1500:1500 for influxdb v1.11
     image: 'influxdb:1.11' # You must change this to 'quay.io/influxdb/influxdb3-core:latest' for influxdb V3
 
   grafana:
@@ -72,7 +72,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_PLUGINS_PREINSTALL=marcusolsson-hourly-heatmap-panel
     volumes:
-      - './grafana:/var/lib/grafana'
+      - './grafana:/var/lib/grafana' # Must be owned by 472:472
     ports:
       - '3000:3000'
     image: 'grafana/grafana:latest'
